@@ -1,0 +1,34 @@
+﻿/* ================================================ */
+/* CÁC TÙY CHỈNH CHO GIAO DIỆN SIMS */
+/* ================================================ */
+
+/* --- Tùy chỉnh Sidebar --- */
+
+/* 1. Đổi màu icon mặc định thành màu cam */
+.sidebar-light .nav-item .nav-link i {
+    color: #fd7e14; /* Mã màu cam ($orange) của template */
+}
+
+/* 2. Đổi màu chữ mặc định thành đen đậm hơn */
+.sidebar-light .nav-item .nav-link span {
+    color: #3a3b45; /* Mã màu gray-900 - màu đen đậm nhất của template */
+    font-weight: 500; /* Tăng độ dày của chữ một chút */
+}
+
+/* 3. Khi di chuột vào hoặc khi mục được chọn (active), chữ sẽ chuyển sang màu cam */
+.sidebar-light .nav-item .nav-link:hover span,
+.sidebar-light .nav-item.active .nav-link span {
+    color: #fd7e14;
+    font-weight: 700; /* Chữ đậm hơn khi active/hover */
+}
+
+/* 4. Giữ cho icon của mục đang active cũng có màu cam và không bị mờ đi */
+.sidebar-light .nav-item.active .nav-link i {
+    color: #fd7e14;
+}
+
+/* 5. Khi di chuột vào, giữ cho icon vẫn là màu cam */
+.sidebar-light .nav-item .nav-link:hover i {
+    color: #fd7e14; /* Giữ nguyên màu cam, không bị đổi thành đen */
+}
+
