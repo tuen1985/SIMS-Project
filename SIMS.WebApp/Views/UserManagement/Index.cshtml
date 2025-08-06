@@ -1,0 +1,57 @@
+﻿@* File: Views/UserManagement/Index.cshtml *@
+@model IEnumerable<SIMS.WebApp.ViewModels.UserRolesViewModel>
+
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<h1>Quản lý người dùng</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Họ Tên</th>
+            <th>Tên người dùng</th>
+            <th>Email</th>
+            <th>Vai trò</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>
+                    @*
+                        Thêm điều kiện @if:
+                        - Nếu người dùng có vai trò "Admin", hiển thị một tên chung.
+                        - Nếu là các vai trò khác, hiển thị FirstName + LastName.
+                    *@
+                    @if (user.Roles.Contains("Admin"))
+                    {
+                        <span class="font-weight-bold">Admin</span>
+                    }
+                    else
+                    {
+                        @(user.FirstName + " " + user.LastName)
+                    }
+                </td>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>@string.Join(", ", user.Roles)</td>
+                <td>
+                    @* Thêm điều kiện @if:
+                        Chỉ hiển thị nút "Quản lý Vai trò" nếu danh sách vai trò của người dùng
+                        KHÔNG chứa vai trò "Admin".
+                    *@
+                    @if (!user.Roles.Contains("Admin"))
+                    {
+                        <a asp-action="ManageRoles" asp-route-userId="@user.UserId" class="btn btn-primary btn-sm">
+                            Quản lý Vai trò
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

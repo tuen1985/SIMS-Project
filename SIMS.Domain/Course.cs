@@ -9,12 +9,12 @@ namespace SIMS.Domain
         [Required(ErrorMessage = "Mã khóa học không được để trống.")]
         [Display(Name = "Mã khóa học")]
         [StringLength(10, ErrorMessage = "Mã khóa học không được vượt quá 10 ký tự.")]
-        public string CourseCode { get; set; }
+        public string CourseCode { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Tên khóa học không được để trống.")]
         [Display(Name = "Tên khóa học")]
         [StringLength(100, ErrorMessage = "Tên khóa học không được vượt quá 100 ký tự.")]
-        public string CourseName { get; set; }
+        public string CourseName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Số tín chỉ không được để trống.")]
         [Display(Name = "Số tín chỉ")]

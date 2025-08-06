@@ -1,0 +1,46 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+    Layout = "~/Views/Shared/_LoginLayout.cshtml"; // Sử dụng layout mới
+}
+
+<div class="text-center">
+    <h1 class="h4 text-gray-900 mb-4">Log in to your account</h1>
+</div>
+
+<form id="account" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+    <div class="form-group">
+        <input asp-for="Input.Email" class="form-control form-control-user" autocomplete="username" aria-required="true" placeholder="Enter Email Address..." />
+        <span asp-validation-for="Input.Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input asp-for="Input.Password" class="form-control form-control-user" autocomplete="current-password" aria-required="true" placeholder="Password" />
+        <span asp-validation-for="Input.Password" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <div class="custom-control custom-checkbox small">
+            <input class="custom-control-input" asp-for="Input.RememberMe" />
+            <label class="custom-control-label" asp-for="Input.RememberMe">
+                @Html.DisplayNameFor(m => m.Input.RememberMe)
+            </label>
+        </div>
+    </div>
+    <button id="login-submit" type="submit" class="btn btn-login btn-user btn-block">
+        Log in
+    </button>
+</form>
+<hr>
+<div class="text-center login-links">
+    <a class="small" id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+</div>
+<div class="text-center login-links">
+    <a class="small" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

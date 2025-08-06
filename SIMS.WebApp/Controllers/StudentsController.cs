@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using SIMS.Application.Repositories;
 using SIMS.Domain;
+using Microsoft.AspNetCore.Authorization; // Thêm using này
 
 namespace SIMS.WebApp.Controllers
 {
+    [Authorize(Roles = "Admin, Department Staff")] // Chỉ Admin và NV Phòng Đào tạo được truy cập
     public class StudentsController : Controller
     {
         private readonly IStudentRepository _studentRepository;
@@ -92,7 +94,14 @@ namespace SIMS.WebApp.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     // Có thể thêm logic kiểm tra xem student có còn tồn tại không
-                    throw;
+                    if (await _studentRepository.GetByIdAsync(id) == null)
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
                 return RedirectToAction(nameof(Index));
             }

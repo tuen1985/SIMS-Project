@@ -25,6 +25,7 @@
 <body id="page-top">
     <div id="wrapper">
         <ul class="navbar-nav bg-light sidebar sidebar-light accordion" id="accordionSidebar">
+
             <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-controller="Home" asp-action="Index">
                 <div class="sidebar-brand-icon">
                     <img src="~/img/Logo-Btec.webp" alt="BTEC Logo" style="max-height: 45px;">
@@ -32,60 +33,107 @@
                 <div class="sidebar-brand-text mx-3"></div>
             </a>
 
-            <li class="nav-item nav-item-home @(currentController == "Home" ? "active" : "")">
+            <li><hr class="sidebar-divider my-0"></li>
+
+            <li class="nav-item active">
                 <a class="nav-link" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-fw fa-home"></i> <span>Trang chủ</span>
+                    <i class="fas fa-fw fa-home"></i>
+                    <span>Trang chủ</span>
                 </a>
             </li>
 
-            <hr class="sidebar-divider" />
+            <li><hr class="sidebar-divider"></li>
 
-            <div class="sidebar-heading">
-                Chức năng
-            </div>
-
-            <li class="nav-item @(currentController == "Students" ? "active" : "")">
-                <a class="nav-link" asp-controller="Students" asp-action="Index">
-                    <i class="fas fa-fw fa-user-graduate"></i>
-                    <span>Quản lý Sinh viên</span>
-                </a>
+            <li class="nav-item">
+                <div class="sidebar-heading">
+                    Chức năng
+                </div>
             </li>
 
-            <li class="nav-item @(currentController == "Courses" ? "active" : "")">
-                <a class="nav-link" asp-controller="Courses" asp-action="Index">
-                    <i class="fas fa-fw fa-book"></i>
-                    <span>Quản lý Khóa học</span>
-                </a>
-            </li>
-            <hr class="sidebar-divider d-none d-md-block" />
+            @* MENU DÀNH CHO ADMIN *@
+            @if (User.IsInRole("Admin"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="UserManagement" asp-action="Index">
+                        <i class="fas fa-fw fa-users-cog"></i>
+                        <span>Quản lý người dùng</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="UserManagement" asp-action="PendingApprovals">
+                        <i class="fas fa-fw fa-user-check"></i>
+                        <span>Duyệt tài khoản</span>
+                    </a>
+                </li>
+            }
 
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
+            @* MENU DÀNH CHO NV PHÒNG ĐÀO TẠO *@
+            @if (User.IsInRole("Department Staff"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Courses" asp-action="Index">
+                        <i class="fas fa-fw fa-book"></i>
+                        <span>Quản lý Khóa học</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Students" asp-action="Index">
+                        <i class="fas fa-fw fa-user-graduate"></i>
+                        <span>Quản lý Sinh viên</span>
+                    </a>
+                </li>
+            }
+
+            @* MENU DÀNH CHO GIẢNG VIÊN *@
+            @if (User.IsInRole("Faculty"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-fw fa-chalkboard-teacher"></i>
+                        <span>Lớp học của tôi</span>
+                    </a>
+                </li>
+            }
+
+            @* MENU DÀNH CHO SINH VIÊN *@
+            @if (User.IsInRole("Student"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-fw fa-poll"></i>
+                        <span>Kết quả học tập</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-fw fa-edit"></i>
+                        <span>Đăng ký môn học</span>
+                    </a>
+                </li>
+            }
+
+            <li><hr class="sidebar-divider d-none d-md-block"></li>
+
+            <li class="nav-item">
+                <div class="text-center d-none d-md-inline">
+                    <button class="rounded-circle border-0" id="sidebarToggle"></button>
+                </div>
+            </li>
+
         </ul>
-        @* ... Dán phần còn lại của file _Layout.cshtml vào đây nếu cần ... *@
 
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
-
                     <a class="d-flex align-items-center" style="text-decoration: none;" asp-controller="Home" asp-action="Index">
                         <span class="h5 mb-0 font-weight-bold text-gray-800">SIMS</span>
                     </a>
 
                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">User Name</span>
-                                <img class="img-profile rounded-circle"
-                                     src="https://startbootstrap.github.io/startbootstrap-sb-admin-2/img/undraw_profile.svg" />
-                            </a>
-                        </li>
+                        <partial name="_LoginPartial" />
                     </ul>
                 </nav>
                 <div class="container-fluid">
@@ -103,20 +151,10 @@
     </div>
     <script src="~/vendor/jquery/jquery.min.js"></script>
     <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
     <script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <script src="~/js/sb-admin-2.min.js"></script>
-
-    <script src="~/vendor/jquery/jquery.min.js"></script>
-    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.8/jquery.inputmask.min.js"></script> @* <-- KIỂM TRA DÒNG NÀY *@
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.8/jquery.inputmask.min.js"></script>
     <script src="~/js/sb-admin-2.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

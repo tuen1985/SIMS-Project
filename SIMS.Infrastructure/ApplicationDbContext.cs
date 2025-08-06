@@ -1,20 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// File: SIMS.Infrastructure/ApplicationDbContext.cs
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore; // Thêm using này
 using Microsoft.EntityFrameworkCore;
 using SIMS.Domain;
 
 namespace SIMS.Infrastructure
 {
-    public class ApplicationDbContext : DbContext
+    // Kế thừa từ IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
-        public DbSet<Student> Students { get; set; }
-        public DbSet<Course> Courses { get; set; }
+        // Các DbSet này không cần nữa vì đã có trong IdentityDbContext
+        // public DbSet<Student> Students { get; set; }
+        // public DbSet<Course> Courses { get; set; }
+
+        // Tuy nhiên, bạn vẫn cần giữ lại các DbSet cho các domain model khác của bạn
+        public DbSet<Student> Students { get; set; } = default!;
+        public DbSet<Course> Courses { get; set; } = default!;
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder); // Rất quan trọng! Phải gọi phương thức của lớp cha
+            // Các cấu hình Fluent API khác của bạn sẽ ở đây
+        }
     }
 }

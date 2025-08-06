@@ -7,22 +7,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SIMS.Domain;
 using SIMS.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
+using SIMS.Application.Repositories; // Thêm using này
 
 namespace SIMS.WebApp.Controllers
 {
+    [Authorize(Roles = "Admin, Department Staff")] // Chỉ Admin và NV Phòng Đào tạo được truy cập
     public class CoursesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICourseRepository _courseRepository; // Thay thế DbContext bằng Repository
 
-        public CoursesController(ApplicationDbContext context)
+        public CoursesController(ICourseRepository courseRepository) // Dependency Injection cho Repository
         {
-            _context = context;
+            _courseRepository = courseRepository;
         }
 
         // GET: Courses
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Courses.ToListAsync());
+            return View(await _courseRepository.GetAllAsync());
         }
 
         // GET: Courses/Details/5
@@ -33,8 +36,7 @@ namespace SIMS.WebApp.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var course = await _courseRepository.GetByIdAsync(id.Value);
             if (course == null)
             {
                 return NotFound();
@@ -50,16 +52,13 @@ namespace SIMS.WebApp.Controllers
         }
 
         // POST: Courses/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,CourseCode,CourseName,Credits")] Course course)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(course);
-                await _context.SaveChangesAsync();
+                await _courseRepository.AddAsync(course);
                 return RedirectToAction(nameof(Index));
             }
             return View(course);
@@ -73,7 +72,7 @@ namespace SIMS.WebApp.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses.FindAsync(id);
+            var course = await _courseRepository.GetByIdAsync(id.Value);
             if (course == null)
             {
                 return NotFound();
@@ -82,8 +81,6 @@ namespace SIMS.WebApp.Controllers
         }
 
         // POST: Courses/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,CourseCode,CourseName,Credits")] Course course)
@@ -97,12 +94,12 @@ namespace SIMS.WebApp.Controllers
             {
                 try
                 {
-                    _context.Update(course);
-                    await _context.SaveChangesAsync();
+                    await _courseRepository.UpdateAsync(course);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CourseExists(course.Id))
+                    // Kiểm tra xem course có còn tồn tại không
+                    if (await _courseRepository.GetByIdAsync(id) == null)
                     {
                         return NotFound();
                     }
@@ -124,8 +121,7 @@ namespace SIMS.WebApp.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var course = await _courseRepository.GetByIdAsync(id.Value);
             if (course == null)
             {
                 return NotFound();
@@ -139,19 +135,8 @@ namespace SIMS.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
-            if (course != null)
-            {
-                _context.Courses.Remove(course);
-            }
-
-            await _context.SaveChangesAsync();
+            await _courseRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CourseExists(int id)
-        {
-            return _context.Courses.Any(e => e.Id == id);
         }
     }
 }

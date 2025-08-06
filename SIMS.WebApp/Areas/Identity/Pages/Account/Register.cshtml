@@ -1,0 +1,79 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+@if (Model.ShowSuccessMessage)
+{
+    @* GIAO DIỆN KHI ĐĂNG KÝ THÀNH CÔNG *@
+    <div class="text-center success-container">
+        <div class="success-checkmark">
+            <div class="check-icon">
+                <span class="icon-line line-tip"></span>
+                <span class="icon-line line-long"></span>
+                <div class="icon-circle"></div>
+                <div class="icon-fix"></div>
+            </div>
+        </div>
+        <h1 class="h4 text-gray-900 mt-4 mb-3">Registration Submitted!</h1>
+        <p class="text-muted px-4">Your account is pending approval by an administrator. You will be notified via email once it's activated.</p>
+        <hr>
+        <a class="btn btn-login btn-user btn-block" asp-page="./Login">Back to Login</a>
+    </div>
+}
+else
+{
+    @* GIAO DIỆN FORM ĐĂNG KÝ MẶC ĐỊNH *@
+    <div class="text-center">
+        <h1 class="h4 text-gray-900 mb-4">Create a New Account</h1>
+    </div>
+
+    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        <div class="form-group row">
+            <div class="col-sm-6 mb-3 mb-sm-0">
+                <input asp-for="Input.FirstName" class="form-control form-control-user" placeholder="First Name" />
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            <div class="col-sm-6">
+                <input asp-for="Input.LastName" class="form-control form-control-user" placeholder="Last Name" />
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <input asp-for="Input.Email" class="form-control form-control-user" autocomplete="username" aria-required="true" placeholder="Email Address" />
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-6 mb-3 mb-sm-0">
+                <input asp-for="Input.Password" class="form-control form-control-user" autocomplete="new-password" aria-required="true" placeholder="Password" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="col-sm-6">
+                <input asp-for="Input.ConfirmPassword" class="form-control form-control-user" autocomplete="new-password" aria-required="true" placeholder="Repeat Password" />
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <select asp-for="Input.Role" class="form-control form-control-user-select">
+                <option value="">-- Select your role --</option>
+                <option value="Student">I am a Student</option>
+                <option value="Faculty">I am a Faculty Member</option>
+                <option value="Department Staff">I am a Department Staff</option>
+            </select>
+            <span asp-validation-for="Input.Role" class="text-danger"></span>
+        </div>
+        <button id="registerSubmit" type="submit" class="btn btn-login btn-user btn-block">Register Account</button>
+    </form>
+    <hr>
+    <div class="text-center login-links">
+        <a class="small" asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Already have an account? Login!</a>
+    </div>
+}
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
