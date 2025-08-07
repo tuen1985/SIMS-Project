@@ -1,0 +1,46 @@
+﻿@using SIMS.Domain
+@model IEnumerable<SIMS.Domain.Enrollment>
+@{
+    ViewData["Title"] = "Learning Path";
+}
+
+<h1>@ViewData["Title"]</h1>
+<p>This is the list of classes you have been enrolled in.</p>
+<table class="table">
+    <thead>
+        <tr><th>Class Name</th><th>Course</th><th>Faculty</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                @* ADD NULL CHECKS (?.) TO PREVENT ERRORS *@
+                <td>@item.Classroom?.ClassName</td>
+                <td>@item.Classroom?.Course?.CourseName</td>
+                <td>@item.Classroom?.Faculty?.FullName</td>
+                <td>
+                    @{
+                        // Get the current date
+                        var today = DateTime.Today;
+                        // Determine status based on dates
+                        if (item.Classroom != null) // Ensure classroom is not null before checking dates
+                        {
+                            if (today < item.Classroom.StartDate)
+                            {
+                                <span class="badge badge-secondary">Upcoming</span>
+                            }
+                            else if (today > item.Classroom.EndDate)
+                            {
+                                <span class="badge badge-success">Completed</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-primary">In Progress</span>
+                            }
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

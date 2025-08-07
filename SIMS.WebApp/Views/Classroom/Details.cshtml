@@ -2,7 +2,7 @@
 @model SIMS.Domain.Classroom
 
 @{
-    ViewData["Title"] = "Chi tiết Lớp học";
+    ViewData["Title"] = "Classroom Details";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -10,19 +10,25 @@
 
 <div class="row">
     <div class="col-md-8">
-        <h4>Thông tin chung</h4>
+        <h4>General Information</h4>
         <dl class="row">
-            <dt class="col-sm-3">Tên Lớp học</dt>
+            <dt class="col-sm-3">Class Name</dt>
             <dd class="col-sm-9">@Model.ClassName</dd>
 
-            <dt class="col-sm-3">Học kỳ</dt>
+            <dt class="col-sm-3">Semester</dt>
             <dd class="col-sm-9">@Model.Semester</dd>
 
-            <dt class="col-sm-3">Khóa học</dt>
-            <dd class="col-sm-9">@Model.Course.CourseName</dd>
+            <dt class="col-sm-3">Course</dt>
+            <dd class="col-sm-9">@Model.Course?.CourseName</dd>
 
-            <dt class="col-sm-3">Giảng viên</dt>
-            <dd class="col-sm-9">@Model.Faculty.FullName</dd>
+            <dt class="col-sm-3">Faculty</dt>
+            <dd class="col-sm-9">@Model.Faculty?.FullName</dd>
+
+            <dt class="col-sm-3">Start Date</dt>
+            <dd class="col-sm-9">@Model.StartDate.ToString("dd/MM/yyyy")</dd>
+
+            <dt class="col-sm-3">End Date</dt>
+            <dd class="col-sm-9">@Model.EndDate.ToString("dd/MM/yyyy")</dd>
         </dl>
     </div>
 </div>
@@ -31,80 +37,82 @@
 
 <div class="row">
     <div class="col-md-8">
-        <h4>Danh sách Sinh viên</h4>
+        <h4>Student List</h4>
+
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Thêm sinh viên vào lớp</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Manage Class Roster</h6>
             </div>
             <div class="card-body">
-                <form asp-action="AddStudentToClass" method="post">
+                <form asp-action="AddStudentToClass" method="post" class="mb-4">
+                    <h6 class="font-weight-bold">Add new students:</h6>
                     <input type="hidden" name="classroomId" value="@Model.Id" />
                     <div class="row">
                         <div class="col-md-8">
-                            <select name="studentId" class="form-control" asp-items="ViewBag.AvailableStudents">
-                                <option value="">-- Chọn sinh viên để thêm --</option>
-                            </select>
+                            <div class="checkbox-list-container">
+                                @foreach (var student in (SelectList)ViewBag.AvailableStudents)
+                                {
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="studentIds" value="@student.Value" id="student-@student.Value">
+                                        <label class="form-check-label" for="student-@student.Value">
+                                            @student.Text
+                                        </label>
+                                    </div>
+                                }
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <button type="submit" class="btn btn-success btn-block">Thêm</button>
+                        <div class="col-md-4 align-self-center">
+                            <button type="submit" class="btn btn-primary btn-block">Add Selected Students</button>
                         </div>
                     </div>
                 </form>
+
+                <hr>
+
+                <form asp-action="RemoveMultipleStudents" method="post" class="delete-form-trigger"
+                      data-message="Are you sure you want to remove the selected student(s) from the class?">
+                    <h6 class="font-weight-bold">Current Student List:</h6>
+                    <input type="hidden" name="classroomId" value="@Model.Id" />
+
+                    <table class="table table-bordered">
+                        <thead class="thead-light">
+                            <tr>
+                                <th style="width: 50px;">Select</th>
+                                <th>Student Code</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Enrollments.Any())
+                            {
+                                @foreach (var enrollment in Model.Enrollments)
+                                {
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="enrollmentIds" value="@enrollment.Id" class="form-check-input ml-2" />
+                                        </td>
+                                        <td>@enrollment.Student?.StudentCode</td>
+                                        <td>@enrollment.Student?.FullName</td>
+                                        <td>@enrollment.Student?.Email</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center">There are no students in this class yet.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    @if (Model.Enrollments.Any())
+                    {
+                        <div class="form-group mt-3">
+                            <button type="submit" class="btn btn-danger">Remove Selected Students</button>
+                        </div>
+                    }
+                </form>
             </div>
         </div>
-
-        <table class="table table-bordered">
-            <thead class="thead-light">
-                <tr>
-                    <th>Mã SV</th>
-                    <th>Họ Tên</th>
-                    <th>Email</th>
-                    <th>Trạng thái</th>
-                    <th>Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.Enrollments.Any())
-                {
-                    @foreach (var enrollment in Model.Enrollments)
-                    {
-                        <tr>
-                            <td>@enrollment.Student.StudentCode</td>
-                            <td>@enrollment.Student.FullName</td>
-                            <td>@enrollment.Student.Email</td>
-                            <td>
-                                @if (enrollment.Status == EnrollmentStatus.Approved)
-                                {
-                                    <span class="badge badge-success">Đã duyệt</span>
-                                }
-                                else
-                                {
-                                    <span class="badge badge-warning">Chờ duyệt</span>
-                                }
-                            </td>
-                            <td>
-                                <form asp-action="RemoveStudentFromClass" method="post" class="delete-form-trigger"
-                                      data-message="Bạn có chắc chắn muốn xóa sinh viên @enrollment.Student.FullName khỏi lớp học này không?">
-                                    <input type="hidden" name="enrollmentId" value="@enrollment.Id" />
-                                    <input type="hidden" name="classroomId" value="@Model.Id" />
-                                    <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
-                                </form>
-                            </td>
-                        </tr>
-                    }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="5" class="text-center">Chưa có sinh viên nào trong lớp.</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
-
-
-<div>
-    <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
-</div>

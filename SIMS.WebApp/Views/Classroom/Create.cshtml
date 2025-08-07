@@ -1,7 +1,7 @@
 ﻿@model SIMS.WebApp.ViewModels.ClassroomCreateViewModel
 
 @{
-    ViewData["Title"] = "Tạo Lớp học mới";
+    ViewData["Title"] = "Create New Classroom";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -13,20 +13,20 @@
 
             <div class="form-group">
                 <label asp-for="ClassName" class="control-label"></label>
-                <input asp-for="ClassName" class="form-control" placeholder="Ví dụ: PRJ401-Fall2025-A" />
+                <input asp-for="ClassName" class="form-control" placeholder="Example: PRJ401-Fall2025-A" />
                 <span asp-validation-for="ClassName" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="Semester" class="control-label"></label>
-                <input asp-for="Semester" class="form-control" placeholder="Ví dụ: Fall 2025" />
+                <input asp-for="Semester" class="form-control" placeholder="Example: Fall 2025" />
                 <span asp-validation-for="Semester" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="CourseId" class="control-label"></label>
                 <select asp-for="CourseId" class="form-control" asp-items="Model.Courses">
-                    <option value="">-- Vui lòng chọn --</option>
+                    <option value="">-- Please select --</option>
                 </select>
                 <span asp-validation-for="CourseId" class="text-danger"></span>
             </div>
@@ -34,14 +34,26 @@
             <div class="form-group">
                 <label asp-for="FacultyId" class="control-label"></label>
                 <select asp-for="FacultyId" class="form-control" asp-items="Model.Faculties">
-                    <option value="">-- Vui lòng chọn --</option>
+                    <option value="">-- Please select --</option>
                 </select>
                 <span asp-validation-for="FacultyId" class="text-danger"></span>
             </div>
 
+            <div class="form-group row">
+                <div class="col">
+                    <label asp-for="StartDate" class="control-label"></label>
+                    <input asp-for="StartDate" class="form-control" />
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                </div>
+                <div class="col">
+                    <label asp-for="EndDate" class="control-label"></label>
+                    <input asp-for="EndDate" class="form-control" />
+                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                </div>
+            </div>
             <div class="form-group">
-                <input type="submit" value="Tạo mới" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
             </div>
         </form>
     </div>

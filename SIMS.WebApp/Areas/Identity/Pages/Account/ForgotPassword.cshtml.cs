@@ -35,7 +35,6 @@ namespace SIMS.WebApp.Areas.Identity.Pages.Account
             public string Email { get; set; }
         }
 
-        // === PHƯƠNG THỨC NÀY ĐÃ ĐƯỢC THAY ĐỔI HOÀN TOÀN ===
         public async Task<IActionResult> OnPostAsync()
         {
             if (ModelState.IsValid)
@@ -43,18 +42,18 @@ namespace SIMS.WebApp.Areas.Identity.Pages.Account
                 var user = await _userManager.FindByEmailAsync(Input.Email);
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
-                    // Vẫn trả về thành công để không tiết lộ thông tin người dùng
-                    return new JsonResult(new { success = true, message = "Nếu tài khoản của bạn tồn tại, một email đã được gửi đi." });
+                    // Don't reveal that the user does not exist or is not confirmed
+                    return new JsonResult(new { success = true, message = "If your account exists, an email has been sent." });
                 }
 
-                // Tạo mã reset
+                // Generate reset code
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
-                // Logic gửi email (được giả lập)
+                // Mock email sending logic
                 // await _emailSender.SendEmailAsync(...)
 
-                // Trả về thành công VÀ KÈM THEO MÃ RESET cho mục đích demo
+                // Return success AND the reset code for demo purposes
                 return new JsonResult(new { success = true, resetCode = code });
             }
 

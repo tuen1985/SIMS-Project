@@ -33,18 +33,22 @@ namespace SIMS.WebApp.Controllers
         }
 
         // GET: Sửa lại để dùng ViewModel
+        // GET: Sửa lại để dùng ViewModel
         public async Task<IActionResult> Create()
         {
             var faculties = await _userManager.GetUsersInRoleAsync("Faculty");
             var viewModel = new ClassroomCreateViewModel
             {
                 Courses = new SelectList(_context.Courses, "Id", "CourseName"),
-                Faculties = new SelectList(faculties, "Id", "FullName")
+                Faculties = new SelectList(faculties, "Id", "FullName"),
+                // === THÊM 2 DÒNG NÀY ĐỂ GÁN NGÀY MẶC ĐỊNH ===
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddMonths(3) // Mặc định là 3 tháng sau
+                                                    // ===========================================
             };
             return View(viewModel);
         }
 
-        // POST: Sửa lại để nhận ViewModel
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ClassroomCreateViewModel viewModel)
@@ -57,7 +61,9 @@ namespace SIMS.WebApp.Controllers
                     ClassName = viewModel.ClassName,
                     Semester = viewModel.Semester,
                     CourseId = viewModel.CourseId,
-                    FacultyId = viewModel.FacultyId
+                    FacultyId = viewModel.FacultyId,
+                    StartDate = viewModel.StartDate,
+                    EndDate = viewModel.EndDate
                 };
 
                 _context.Add(classroom);
@@ -110,27 +116,31 @@ namespace SIMS.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddStudentToClass(int classroomId, int studentId)
+        public async Task<IActionResult> AddStudentToClass(int classroomId, List<int> studentIds)
         {
-            if (studentId > 0 && classroomId > 0)
+            if (studentIds != null && studentIds.Any())
             {
-                // Kiểm tra xem sinh viên đã tồn tại trong lớp chưa
-                var existingEnrollment = await _context.Enrollments
-                    .FirstOrDefaultAsync(e => e.ClassroomId == classroomId && e.StudentId == studentId);
+                // Lấy danh sách ID sinh viên đã có trong lớp để tránh trùng lặp
+                var existingStudentIds = await _context.Enrollments
+                    .Where(e => e.ClassroomId == classroomId)
+                    .Select(e => e.StudentId)
+                    .ToListAsync();
 
-                if (existingEnrollment == null)
+                // Lọc ra những sinh viên mới thực sự cần thêm
+                var newStudentIds = studentIds.Except(existingStudentIds);
+
+                foreach (var studentId in newStudentIds)
                 {
                     var enrollment = new Enrollment
                     {
                         ClassroomId = classroomId,
                         StudentId = studentId,
-                        Status = EnrollmentStatus.Approved // Staff thêm vào thì duyệt luôn
+                        Status = EnrollmentStatus.Approved
                     };
                     _context.Enrollments.Add(enrollment);
-                    await _context.SaveChangesAsync();
                 }
+                await _context.SaveChangesAsync();
             }
-            // Chuyển hướng về lại trang chi tiết của chính lớp học đó
             return RedirectToAction("Details", new { id = classroomId });
         }
 
@@ -174,6 +184,31 @@ namespace SIMS.WebApp.Controllers
 
             // Chuyển hướng về lại trang danh sách
             return RedirectToAction(nameof(Index));
+        }
+
+
+        // Dán phương thức này vào bên trong file ClassroomController.cs
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveMultipleStudents(int classroomId, List<int> enrollmentIds)
+        {
+            if (enrollmentIds != null && enrollmentIds.Any())
+            {
+                // Tìm tất cả các bản ghi enrollment có ID nằm trong danh sách được gửi lên
+                var enrollmentsToDelete = await _context.Enrollments
+                    .Where(e => enrollmentIds.Contains(e.Id))
+                    .ToListAsync();
+
+                if (enrollmentsToDelete.Any())
+                {
+                    _context.Enrollments.RemoveRange(enrollmentsToDelete);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            // Chuyển hướng về lại trang chi tiết của lớp học
+            return RedirectToAction("Details", new { id = classroomId });
         }
     }
 }

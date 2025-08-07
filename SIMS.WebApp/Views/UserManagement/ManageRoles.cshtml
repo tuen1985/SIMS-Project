@@ -5,7 +5,7 @@
     ViewData["Title"] = "Manage Roles";
 }
 
-<h1>Quản lý vai trò cho: @Model.UserName</h1>
+<h1>Manage Roles for: @Model.UserName</h1>
 <hr />
 <div class="row">
     <div class="col-md-6">
@@ -13,17 +13,17 @@
             <input type="hidden" asp-for="UserId" />
             <div class="card">
                 <div class="card-header">
-                    <h2>Gán một vai trò duy nhất</h2>
+                    <h2>Assign a single role</h2>
                 </div>
                 <div class="card-body">
-                    @* Dùng vòng lặp để tạo ra các radio button *@
+                    @* Loop to create radio buttons *@
                     @foreach (var roleName in Model.Roles)
                     {
                         <div class="form-check m-1">
-                            @* - type="radio" để đảm bảo chỉ chọn được 1.
-                                - name="@nameof(Model.SelectedRole)" để nhóm các radio lại với nhau.
-                                - value="@roleName" là giá trị sẽ được gửi đi khi form được submit.
-                                - @(Model.SelectedRole == roleName ? "checked" : "") để tự động chọn vai trò hiện tại của người dùng.
+                            @* - type="radio" ensures only one can be selected.
+                                - name="@nameof(Model.SelectedRole)" groups the radio buttons together.
+                                - value="@roleName" is the value that will be sent when the form is submitted.
+                                - @(Model.SelectedRole == roleName ? "checked" : "") automatically selects the user's current role.
                             *@
                             <input type="radio"
                                    name="@nameof(Model.SelectedRole)"
@@ -38,8 +38,8 @@
                 </div>
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="card-footer">
-                    <input type="submit" value="Cập nhật" class="btn btn-primary" />
-                    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+                    <input type="submit" value="Update" class="btn btn-primary" />
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
                 </div>
             </div>
         </form>

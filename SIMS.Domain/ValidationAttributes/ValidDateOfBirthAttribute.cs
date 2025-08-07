@@ -17,7 +17,7 @@ namespace SIMS.Domain.ValidationAttributes
         {
             _minAge = minAge;
             _maxAge = maxAge;
-            ErrorMessage = $"Tuổi của sinh viên phải từ {_minAge} đến {_maxAge}.";
+            ErrorMessage = $"The student's age must be between {_minAge} and {_maxAge}.";
         }
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SIMS.Domain;
 using SIMS.Infrastructure;
@@ -142,6 +143,104 @@ public class UserManagementController : Controller
         {
             await _userManager.AddToRoleAsync(user, model.SelectedRole);
         }
+        return RedirectToAction("Index");
+    }
+
+    // GET: /UserManagement/Create
+    public async Task<IActionResult> Create()
+    {
+        var roles = await _roleManager.Roles.Where(r => r.Name != "Admin").ToListAsync();
+        var viewModel = new CreateUserViewModel
+        {
+            RolesList = new SelectList(roles, "Name", "Name")
+        };
+        return View(viewModel);
+    }
+
+    // POST: /UserManagement/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(CreateUserViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                EmailConfirmed = true // Admin tạo thì duyệt luôn
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, model.SelectedRole);
+
+                // Nếu tạo sinh viên, đồng thời tạo hồ sơ sinh viên
+                if (model.SelectedRole == "Student")
+                {
+                    var studentProfile = new Student
+                    {
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Email = user.Email,
+                        StudentCode = $"BH{new Random().Next(10000, 99999)}", // Tạo mã SV ngẫu nhiên
+                        DateOfBirth = System.DateTime.Now.AddYears(-18),
+                        ApplicationUserId = user.Id
+                    };
+                    _context.Students.Add(studentProfile);
+                    await _context.SaveChangesAsync();
+                }
+                return RedirectToAction("Index");
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+
+        // Nếu thất bại, tải lại danh sách vai trò
+        var roles = await _roleManager.Roles.Where(r => r.Name != "Admin").ToListAsync();
+        model.RolesList = new SelectList(roles, "Name", "Name");
+        return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteUser(string userId)
+    {
+        if (string.IsNullOrEmpty(userId))
+        {
+            return NotFound();
+        }
+
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user != null)
+        {
+            // Không cho phép xóa tài khoản Admin để bảo vệ hệ thống
+            if (await _userManager.IsInRoleAsync(user, "Admin"))
+            {
+                // Có thể thêm TempData để thông báo lỗi
+                return RedirectToAction("Index");
+            }
+
+            // Nếu người dùng là Student, cần xóa cả hồ sơ Student liên quan
+            if (await _userManager.IsInRoleAsync(user, "Student"))
+            {
+                var studentProfile = await _context.Students.FirstOrDefaultAsync(s => s.ApplicationUserId == userId);
+                if (studentProfile != null)
+                {
+                    _context.Students.Remove(studentProfile);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            await _userManager.DeleteAsync(user);
+        }
+
         return RedirectToAction("Index");
     }
 }

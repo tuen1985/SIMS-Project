@@ -1,19 +1,19 @@
 ﻿@model IEnumerable<SIMS.WebApp.ViewModels.UserRolesViewModel>
 
 @{
-    ViewData["Title"] = "Tài khoản chờ duyệt";
+    ViewData["Title"] = "Pending Approvals";
 }
 
 <h1>@ViewData["Title"]</h1>
-<p>Danh sách các tài khoản Giảng viên và Nhân viên Phòng Đào tạo đang chờ được kích hoạt.</p>
+<p>List of Faculty and Department Staff accounts awaiting activation.</p>
 
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>Họ Tên</th>
+            <th>Full Name</th>
             <th>Email</th>
-            <th>Vai trò</th>
-            <th>Hành động</th>
+            <th>Role(s)</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -28,7 +28,7 @@
                     <td>
                         <form asp-action="ApproveUser" method="post">
                             <input type="hidden" name="userId" value="@user.UserId" />
-                            <button type="submit" class="btn btn-success btn-sm">Duyệt</button>
+                            <button type="submit" class="btn btn-primary btn-sm">Approve</button>
                         </form>
                     </td>
                 </tr>
@@ -37,7 +37,7 @@
         else
         {
             <tr>
-                <td colspan="4" class="text-center">Không có tài khoản nào đang chờ duyệt.</td>
+                <td colspan="4" class="text-center">There are no accounts pending approval.</td>
             </tr>
         }
     </tbody>

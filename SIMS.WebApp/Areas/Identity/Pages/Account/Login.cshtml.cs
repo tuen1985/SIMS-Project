@@ -114,7 +114,7 @@ namespace SIMS.WebApp.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty,"");
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return Page();
                 }
             }

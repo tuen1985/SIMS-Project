@@ -316,7 +316,7 @@ html, body {
 
 /* 3. Giữ lại viền cho sidebar với độ ưu tiên cao */
 #accordionSidebar {
-    border-right: 1px solid #dddfeb !important;
+    background-color: rgb(248, 249, 253) !important;
 }
 
 /* 4. Đẩy nút ghim sidebar xuống cuối cùng */
@@ -595,3 +595,50 @@ body.sidebar-toggled .topbar.fixed-top {
     .footer-contact-info a:hover {
         text-decoration: underline;
     }
+
+/* CSS cho phần hero toàn màn hình ở trang chủ */
+.full-height-hero {
+    min-height: calc(100vh - 5.5rem - 73px); /* 100% chiều cao màn hình - chiều cao topbar - chiều cao footer mặc định */
+}
+
+/* Tạo khung cuộn cho danh sách checkbox theo dạng hàng dọc */
+.checkbox-list-container {
+    height: 200px;
+    border: 1px solid #d1d3e2;
+    border-radius: .35rem;
+    padding: 0.75rem;
+    overflow-y: auto;
+}
+
+    .checkbox-list-container .form-check {
+        margin-bottom: 0.5rem;
+    }
+
+/* ================================================= */
+/* === BIẾN NÚT BẤM THÀNH LINK ĐƠN GIẢN === */
+/* ================================================= */
+
+.button-as-link {
+    background: none !important;
+    border: none;
+    padding: 0 !important;
+    color: #fd7e14;
+    cursor: pointer;
+}
+
+    .button-as-link:hover {
+        color: #e74a3b; /* Chuyển sang màu đỏ khi hover để cảnh báo */
+    }
+
+
+/* ================================================ */
+/* === CSS CHO KHU VỰC CHÀO MỪNG TOÀN MÀN HÌNH === */
+/* ================================================ */
+
+.hero-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Căn giữa nội dung theo chiều dọc */
+    min-height: calc(100vh - 5.5rem); /* 100% chiều cao màn hình trừ đi topbar */
+    padding-bottom: 2rem; /* Thêm chút đệm ở dưới cho cân đối */
+}

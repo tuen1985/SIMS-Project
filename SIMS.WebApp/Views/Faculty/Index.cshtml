@@ -1,0 +1,44 @@
+﻿@model IEnumerable<SIMS.Domain.Classroom>
+@{
+    ViewData["Title"] = "My Classes";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (Model.Any())
+{
+    <p>This is the list of classes you are in charge of.</p>
+    <div class="row">
+        @foreach (var classroom in Model)
+        {
+            <div class="col-lg-6 col-md-12 mb-4">
+                <div class="card shadow h-100">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title font-weight-bold text-primary">@classroom.ClassName</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@classroom.Course.CourseName</h6>
+                        <ul class="list-unstyled mt-3">
+                            <li><strong>Semester:</strong> @classroom.Semester</li>
+                            <li><strong>Start Date:</strong> @classroom.StartDate.ToString("dd/MM/yyyy")</li>
+                            <li><strong>End Date:</strong> @classroom.EndDate.ToString("dd/MM/yyyy")</li>
+                        </ul>
+                        <div class="mt-auto">
+                            <a asp-action="ManageGrades" asp-route-id="@classroom.Id" class="btn btn-primary mt-3">
+                                <i class="fas fa-edit"></i> Manage Grades
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="card shadow mt-4">
+        <div class="card-body text-center">
+            <p class="lead">
+                You have not been assigned to any classes yet.
+            </p>
+        </div>
+    </div>
+}

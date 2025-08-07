@@ -2,18 +2,21 @@
 using Microsoft.EntityFrameworkCore;
 using SIMS.Application.Repositories;
 using SIMS.Domain;
-using Microsoft.AspNetCore.Authorization; // Thêm using này
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace SIMS.WebApp.Controllers
 {
-    [Authorize(Roles = "Department Staff")] // Chỉ Admin và NV Phòng Đào tạo được truy cập
+    [Authorize(Roles = "Admin, Department Staff")]
     public class StudentsController : Controller
     {
         private readonly IStudentRepository _studentRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public StudentsController(IStudentRepository studentRepository)
+        public StudentsController(IStudentRepository studentRepository, UserManager<ApplicationUser> userManager)
         {
             _studentRepository = studentRepository;
+            _userManager = userManager;
         }
 
         // GET: Students
@@ -93,7 +96,6 @@ namespace SIMS.WebApp.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    // Có thể thêm logic kiểm tra xem student có còn tồn tại không
                     if (await _studentRepository.GetByIdAsync(id) == null)
                     {
                         return NotFound();
@@ -130,7 +132,35 @@ namespace SIMS.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            // Step 1: Find the student profile to delete
+            var student = await _studentRepository.GetByIdAsync(id);
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            // Step 2: Check if this student has an associated account
+            if (!string.IsNullOrEmpty(student.ApplicationUserId))
+            {
+                // Step 3: Find the user account by the stored ID
+                var user = await _userManager.FindByIdAsync(student.ApplicationUserId);
+                if (user != null)
+                {
+                    // Step 4: Delete the user account (AspNetUsers)
+                    var result = await _userManager.DeleteAsync(user);
+                    if (!result.Succeeded)
+                    {
+                        // Handle the error if the account deletion fails
+                        // In this case, we'll stop the deletion to ensure data integrity
+                        ModelState.AddModelError("", "Could not delete the associated user account.");
+                        return View("Delete", student);
+                    }
+                }
+            }
+
+            // Step 5: Delete the student profile (Students)
             await _studentRepository.DeleteAsync(id);
+
             return RedirectToAction(nameof(Index));
         }
     }

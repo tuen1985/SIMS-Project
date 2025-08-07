@@ -1,5 +1,5 @@
 ﻿@{
-    // Lấy tên Controller và Action hiện tại từ URL
+    // Get current Controller and Action from URL
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
 }
@@ -22,7 +22,7 @@
     <link href="~/css/sb-admin-2.min.css" rel="stylesheet" />
     <link href="~/css/custom.css" rel="stylesheet" />
 </head>
-<body id="page-top">
+<body id="page-top" class="@(currentController == "Home" && currentAction == "Index" ? "homepage-bg" : "")">
     <div id="wrapper">
         <ul class="navbar-nav bg-light sidebar sidebar-light accordion" id="accordionSidebar">
 
@@ -30,15 +30,14 @@
                 <div class="sidebar-brand-icon">
                     <img src="~/img/Logo-Btec.webp" alt="BTEC Logo" style="max-height: 45px;">
                 </div>
-                <div class="sidebar-brand-text mx-3"></div>
             </a>
 
             <li><hr class="sidebar-divider my-0"></li>
 
-            <li class="nav-item active">
+            <li class="nav-item @(currentController == "Home" ? "active" : "")">
                 <a class="nav-link" asp-controller="Home" asp-action="Index">
                     <i class="fas fa-fw fa-home"></i>
-                    <span>Trang chủ</span>
+                    <span>Dashboard</span>
                 </a>
             </li>
 
@@ -46,74 +45,74 @@
 
             <li class="nav-item">
                 <div class="sidebar-heading">
-                    Chức năng
+                    Features
                 </div>
             </li>
 
-            @* MENU DÀNH CHO ADMIN *@
+            @* MENU FOR ADMIN *@
             @if (User.IsInRole("Admin"))
             {
-                <li class="nav-item">
+                <li class="nav-item @(currentController == "UserManagement" && currentAction == "Index" ? "active" : "")">
                     <a class="nav-link" asp-controller="UserManagement" asp-action="Index">
                         <i class="fas fa-fw fa-users-cog"></i>
-                        <span>Quản lý người dùng</span>
+                        <span>User Management</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="UserManagement" asp-action="PendingApprovals">
-                        <i class="fas fa-fw fa-user-check"></i>
-                        <span>Duyệt tài khoản</span>
+                <li class="nav-item @(currentController == "UserManagement" && currentAction == "Create" ? "active" : "")">
+                    <a class="nav-link" asp-controller="UserManagement" asp-action="Create">
+                        <i class="fas fa-fw fa-user-plus"></i>
+                        <span>Add User</span>
                     </a>
                 </li>
             }
 
-            @* MENU DÀNH CHO NV PHÒNG ĐÀO TẠO *@
+            @* MENU FOR DEPARTMENT STAFF *@
             @if (User.IsInRole("Department Staff"))
             {
-                <li class="nav-item">
+                <li class="nav-item @(currentController == "Classroom" ? "active" : "")">
                     <a class="nav-link" asp-controller="Classroom" asp-action="Index">
                         <i class="fas fa-fw fa-school"></i>
-                        <span>Quản lý Lớp học</span>
+                        <span>Classroom Mngmt</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item @(currentController == "Courses" ? "active" : "")">
                     <a class="nav-link" asp-controller="Courses" asp-action="Index">
                         <i class="fas fa-fw fa-book"></i>
-                        <span>Quản lý Khóa học</span>
+                        <span>Course Mngmt</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item @(currentController == "Students" ? "active" : "")">
                     <a class="nav-link" asp-controller="Students" asp-action="Index">
                         <i class="fas fa-fw fa-user-graduate"></i>
-                        <span>Quản lý Sinh viên</span>
+                        <span>Student Mngmt</span>
                     </a>
                 </li>
             }
 
-            @* MENU DÀNH CHO GIẢNG VIÊN *@
+            @* MENU FOR FACULTY *@
             @if (User.IsInRole("Faculty"))
             {
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
+                <li class="nav-item @(currentController == "Faculty" ? "active" : "")">
+                    <a class="nav-link" asp-controller="Faculty" asp-action="Index">
                         <i class="fas fa-fw fa-chalkboard-teacher"></i>
-                        <span>Lớp học của tôi</span>
+                        <span>My Classes</span>
                     </a>
                 </li>
             }
 
-            @* MENU DÀNH CHO SINH VIÊN *@
+            @* MENU FOR STUDENT *@
             @if (User.IsInRole("Student"))
             {
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
+                <li class="nav-item @(currentController == "StudentDashboard" && currentAction == "AcademicResults" ? "active" : "")">
+                    <a class="nav-link" asp-controller="StudentDashboard" asp-action="AcademicResults">
                         <i class="fas fa-fw fa-poll"></i>
-                        <span>Kết quả học tập</span>
+                        <span>Academic Results</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="fas fa-fw fa-edit"></i>
-                        <span>Đăng ký môn học</span>
+                <li class="nav-item @(currentController == "StudentDashboard" && currentAction == "LearningPath" ? "active" : "")">
+                    <a class="nav-link" asp-controller="StudentDashboard" asp-action="LearningPath">
+                        <i class="fas fa-fw fa-route"></i>
+                        <span>Learning Path</span>
                     </a>
                 </li>
             }
@@ -125,12 +124,11 @@
                     <button class="rounded-circle border-0" id="sidebarToggle"></button>
                 </div>
             </li>
-
         </ul>
 
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
-                <nav class="navbar navbar-expand navbar-light bg-white topbar shadow fixed-top">
+                <nav class="navbar navbar-expand navbar-light bg-light topbar shadow fixed-top">
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
@@ -146,65 +144,78 @@
                     @RenderBody()
                 </div>
             </div>
-            <footer class="sticky-footer custom-footer">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-6 footer-contact-info">
-                            <h6>Mọi góp ý, thắc mắc xin liên hệ: Trung tâm Cao đẳng quốc tế tại Hà Nội - Trường Cao đẳng FPT Polytechnic</h6>
-                            <ul class="list-unstyled">
-                                <li>
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <strong>Địa chỉ:</strong> BTEC Tòa T-FPPT, đường Trịnh Văn Bô, quận Nam Từ Liêm, Hà Nội.
-                                </li>
-                                <li>
-                                    <i class="fas fa-envelope"></i>
-                                    <strong>Email:</strong>
-                                    <ul>
-                                        <li>Phòng TC & QLĐT: <a href="mailto:academic.btec.hn@fpt.edu.vn">academic.btec.hn@fpt.edu.vn</a></li>
-                                        <li>DVSV: <a href="mailto:sro.btec.hn@fpt.edu.vn">sro.btec.hn@fpt.edu.vn</a></li>
-                                        <li>CTSV: <a href="mailto:se.btec.hn@fpt.edu.vn">se.btec.hn@fpt.edu.vn</a></li>
-                                        <li>Bộ phận thu ngân: <a href="mailto:accounting.btec.hn@fpt.edu.vn">accounting.btec.hn@fpt.edu.vn</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <i class="fas fa-phone-alt"></i>
-                                    <strong>Hotline:</strong> 024 730 99 588
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6 footer-contact-info">
-                            <h6>For more information or any queries, please contact: FPT Polytechnic International in Hanoi</h6>
-                            <ul class="list-unstyled">
-                                <li>
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <strong>Address:</strong> BTEC, BTEC FPT Building, Trinh Van Bo Street, Nam Tu Liem District, Hanoi.
-                                </li>
-                                <li>
-                                    <i class="fas fa-envelope"></i>
-                                    <strong>Email:</strong>
-                                    <ul>
-                                        <li>Academic Department: <a href="mailto:academic.btec.hn@fpt.edu.vn">academic.btec.hn@fpt.edu.vn</a></li>
-                                        <li>SRO Department: <a href="mailto:sro.btec.hn@fpt.edu.vn">sro.btec.hn@fpt.edu.vn</a></li>
-                                        <li>SE Department: <a href="mailto:se.btec.hn@fpt.edu.vn">se.btec.hn@fpt.edu.vn</a></li>
-                                        <li>Finance Department: <a href="mailto:accounting.btec.hn@fpt.edu.vn">accounting.btec.hn@fpt.edu.vn</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <i class="fas fa-phone-alt"></i>
-                                    <strong>Hotline:</strong> 024 730 99 588
-                                </li>
-                            </ul>
+            @if (currentController == "Home" && currentAction == "Index")
+            {
+                <footer class="sticky-footer custom-footer">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6 footer-contact-info">
+                                <h6>For any feedback or questions, please contact: FPT Polytechnic International College in Hanoi</h6>
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <strong>Address:</strong> BTEC Tòa T-FPPT, Trinh Van Bo Street, Nam Tu Liem District, Hanoi.
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-envelope"></i>
+                                        <strong>Email:</strong>
+                                        <ul>
+                                            <li>Academic Dept: <a href="mailto:academic.btec.hn@fpt.edu.vn">academic.btec.hn@fpt.edu.vn</a></li>
+                                            <li>Student Services Dept: <a href="mailto:sro.btec.hn@fpt.edu.vn">sro.btec.hn@fpt.edu.vn</a></li>
+                                            <li>Student Affairs Dept: <a href="mailto:se.btec.hn@fpt.edu.vn">se.btec.hn@fpt.edu.vn</a></li>
+                                            <li>Finance Dept: <a href="mailto:accounting.btec.hn@fpt.edu.vn">accounting.btec.hn@fpt.edu.vn</a></li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-phone-alt"></i>
+                                        <strong>Hotline:</strong> 024 730 99 588
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6 footer-contact-info">
+                                <h6>For more information or any queries, please contact: FPT Polytechnic International in Hanoi</h6>
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <strong>Address:</strong> BTEC, BTEC FPT Building, Trinh Van Bo Street, Nam Tu Liem District, Hanoi.
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-envelope"></i>
+                                        <strong>Email:</strong>
+                                        <ul>
+                                            <li>Academic Department: <a href="mailto:academic.btec.hn@fpt.edu.vn">academic.btec.hn@fpt.edu.vn</a></li>
+                                            <li>SRO Department: <a href="mailto:sro.btec.hn@fpt.edu.vn">sro.btec.hn@fpt.edu.vn</a></li>
+                                            <li>SE Department: <a href="mailto:se.btec.hn@fpt.edu.vn">se.btec.hn@fpt.edu.vn</a></li>
+                                            <li>Finance Department: <a href="mailto:accounting.btec.hn@fpt.edu.vn">accounting.btec.hn@fpt.edu.vn</a></li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-phone-alt"></i>
+                                        <strong>Hotline:</strong> 024 730 99 588
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </footer>
+                </footer>
+            }
+            else
+            {
+                <footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; SIMS Project @DateTime.Now.Year</span>
+                        </div>
+                    </div>
+                </footer>
+            }
         </div>
     </div>
     <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận Hành động</h5>
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Action</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -212,8 +223,8 @@
                 <div class="modal-body" id="deleteModalBody">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Xóa</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>
                 </div>
             </div>
         </div>

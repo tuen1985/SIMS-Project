@@ -13,29 +13,29 @@ namespace SIMS.Domain
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Mã sinh viên không được để trống.")]
-        [Display(Name = "Mã sinh viên")]
-        [RegularExpression(@"^BH\d{5}$", ErrorMessage = "Mã sinh viên phải có định dạng BHxxxxx (ví dụ: BH12345).")]
+        [Required(ErrorMessage = "Student Code cannot be empty.")]
+        [Display(Name = "Student Code")]
+        [RegularExpression(@"^BH\d{5}$", ErrorMessage = "Student Code must be in the format BHxxxxx (e.g., BH12345).")]
         public string StudentCode { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Tên không được để trống.")]
-        [StringLength(50, ErrorMessage = "Tên không được vượt quá 50 ký tự.")]
-        [Display(Name = "Tên")]
+        [Required(ErrorMessage = "First Name cannot be empty.")]
+        [StringLength(50, ErrorMessage = "First Name cannot exceed 50 characters.")]
+        [Display(Name = "First Name")]
         public string FirstName { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Họ không được để trống.")]
-        [StringLength(50, ErrorMessage = "Họ không được vượt quá 50 ký tự.")]
-        [Display(Name = "Họ")]
+        [Required(ErrorMessage = "Last Name cannot be empty.")]
+        [StringLength(50, ErrorMessage = "Last Name cannot exceed 50 characters.")]
+        [Display(Name = "Last Name")]
         public string LastName { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Ngày sinh không được để trống.")]
+        [Required(ErrorMessage = "Date of Birth cannot be empty.")]
         [DataType(DataType.Date)]
-        [Display(Name = "Ngày sinh")]
+        [Display(Name = "Date of Birth")]
         [ValidDateOfBirth(minAge: 17, maxAge: 100)]
         public DateTime DateOfBirth { get; set; }
 
-        [Required(ErrorMessage = "Email không được để trống.")]
-        [EmailAddress(ErrorMessage = "Định dạng email không hợp lệ.")]
+        [Required(ErrorMessage = "Email cannot be empty.")]
+        [EmailAddress(ErrorMessage = "Invalid email format.")]
         [Display(Name = "Email")]
         public string Email { get; set; } = string.Empty;
 
