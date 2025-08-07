@@ -1,7 +1,7 @@
 ﻿@model SIMS.Domain.Student
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create"; // Thiết lập tiêu đề trang
 }
 
 <h1>Create</h1>
@@ -10,33 +10,47 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
+        <!-- Form gửi về action Create trong controller -->
         <form asp-action="Create">
+            <!-- Hiển thị lỗi validation của toàn bộ model -->
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Mã sinh viên -->
             <div class="form-group">
                 <label asp-for="StudentCode" class="control-label"></label>
-                <input asp-for="StudentCode" class="form-control" id="StudentCodeInput" /> @* Thêm id vào đây *@
+                <input asp-for="StudentCode" class="form-control" id="StudentCodeInput" /> @* Thêm id để dùng với inputmask *@
                 <span asp-validation-for="StudentCode" class="text-danger"></span>
             </div>
+
+            <!-- Họ -->
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
                 <input asp-for="FirstName" class="form-control" />
                 <span asp-validation-for="FirstName" class="text-danger"></span>
             </div>
+
+            <!-- Tên -->
             <div class="form-group">
                 <label asp-for="LastName" class="control-label"></label>
                 <input asp-for="LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
+
+            <!-- Ngày sinh -->
             <div class="form-group">
                 <label asp-for="DateOfBirth" class="control-label"></label>
                 <input asp-for="DateOfBirth" class="form-control" />
                 <span asp-validation-for="DateOfBirth" class="text-danger"></span>
             </div>
+
+            <!-- Email -->
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
+
+            <!-- Nút submit -->
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -44,15 +58,18 @@
     </div>
 </div>
 
+<!-- Link quay lại danh sách -->
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script>
         $(document).ready(function () {
-            // Tìm đến ô input có id là StudentCodeInput và áp dụng mặt nạ
+            // Áp dụng mặt nạ định dạng "BH99999" cho mã sinh viên
             $("#StudentCodeInput").inputmask("BH99999");
         });
     </script>

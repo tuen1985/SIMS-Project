@@ -2,17 +2,19 @@
 
 <h1>Student List</h1>
 
+<!-- Nút tạo sinh viên mới -->
 <p>
     <a asp-action="Create" class="btn btn-primary">Create New Student</a>
 </p>
 
+<!-- Bảng hiển thị danh sách sinh viên -->
 <table class="table">
     <thead>
         <tr>
             <th>First Name</th>
             <th>Last Name</th>
             <th>Email</th>
-            <th></th> @* Thêm một cột trống cho các nút bấm *@
+            <th></th> @* Cột để chứa các nút hành động *@
         </tr>
     </thead>
     <tbody>
@@ -23,7 +25,7 @@
                 <td>@student.LastName</td>
                 <td>@student.Email</td>
                 <td>
-                    @* Thêm các link hành động *@
+                    <!-- Các liên kết hành động -->
                     <a asp-action="Edit" asp-route-id="@student.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@student.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@student.Id">Delete</a>
