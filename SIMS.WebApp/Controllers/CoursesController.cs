@@ -12,7 +12,7 @@ using SIMS.Application.Repositories; // Thêm using này
 
 namespace SIMS.WebApp.Controllers
 {
-    [Authorize(Roles = "Admin, Department Staff")] // Chỉ Admin và NV Phòng Đào tạo được truy cập
+    [Authorize(Roles = "Department Staff")] // Chỉ Admin và NV Phòng Đào tạo được truy cập
     public class CoursesController : Controller
     {
         private readonly ICourseRepository _courseRepository; // Thay thế DbContext bằng Repository

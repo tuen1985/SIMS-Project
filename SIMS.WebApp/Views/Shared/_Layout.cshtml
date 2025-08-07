@@ -71,6 +71,12 @@
             @if (User.IsInRole("Department Staff"))
             {
                 <li class="nav-item">
+                    <a class="nav-link" asp-controller="Classroom" asp-action="Index">
+                        <i class="fas fa-fw fa-school"></i>
+                        <span>Quản lý Lớp học</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" asp-controller="Courses" asp-action="Index">
                         <i class="fas fa-fw fa-book"></i>
                         <span>Quản lý Khóa học</span>
@@ -115,7 +121,7 @@
             <li><hr class="sidebar-divider d-none d-md-block"></li>
 
             <li class="nav-item">
-                <div class="text-center d-none d-md-inline">
+                <div class="text-center d-none d-md-block">
                     <button class="rounded-circle border-0" id="sidebarToggle"></button>
                 </div>
             </li>
@@ -124,7 +130,7 @@
 
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <nav class="navbar navbar-expand navbar-light bg-white topbar shadow fixed-top">
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
@@ -140,13 +146,76 @@
                     @RenderBody()
                 </div>
             </div>
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; SIMS Project @DateTime.Now.Year</span>
+            <footer class="sticky-footer custom-footer">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6 footer-contact-info">
+                            <h6>Mọi góp ý, thắc mắc xin liên hệ: Trung tâm Cao đẳng quốc tế tại Hà Nội - Trường Cao đẳng FPT Polytechnic</h6>
+                            <ul class="list-unstyled">
+                                <li>
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <strong>Địa chỉ:</strong> BTEC Tòa T-FPPT, đường Trịnh Văn Bô, quận Nam Từ Liêm, Hà Nội.
+                                </li>
+                                <li>
+                                    <i class="fas fa-envelope"></i>
+                                    <strong>Email:</strong>
+                                    <ul>
+                                        <li>Phòng TC & QLĐT: <a href="mailto:academic.btec.hn@fpt.edu.vn">academic.btec.hn@fpt.edu.vn</a></li>
+                                        <li>DVSV: <a href="mailto:sro.btec.hn@fpt.edu.vn">sro.btec.hn@fpt.edu.vn</a></li>
+                                        <li>CTSV: <a href="mailto:se.btec.hn@fpt.edu.vn">se.btec.hn@fpt.edu.vn</a></li>
+                                        <li>Bộ phận thu ngân: <a href="mailto:accounting.btec.hn@fpt.edu.vn">accounting.btec.hn@fpt.edu.vn</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <i class="fas fa-phone-alt"></i>
+                                    <strong>Hotline:</strong> 024 730 99 588
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6 footer-contact-info">
+                            <h6>For more information or any queries, please contact: FPT Polytechnic International in Hanoi</h6>
+                            <ul class="list-unstyled">
+                                <li>
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <strong>Address:</strong> BTEC, BTEC FPT Building, Trinh Van Bo Street, Nam Tu Liem District, Hanoi.
+                                </li>
+                                <li>
+                                    <i class="fas fa-envelope"></i>
+                                    <strong>Email:</strong>
+                                    <ul>
+                                        <li>Academic Department: <a href="mailto:academic.btec.hn@fpt.edu.vn">academic.btec.hn@fpt.edu.vn</a></li>
+                                        <li>SRO Department: <a href="mailto:sro.btec.hn@fpt.edu.vn">sro.btec.hn@fpt.edu.vn</a></li>
+                                        <li>SE Department: <a href="mailto:se.btec.hn@fpt.edu.vn">se.btec.hn@fpt.edu.vn</a></li>
+                                        <li>Finance Department: <a href="mailto:accounting.btec.hn@fpt.edu.vn">accounting.btec.hn@fpt.edu.vn</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <i class="fas fa-phone-alt"></i>
+                                    <strong>Hotline:</strong> 024 730 99 588
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </footer>
+        </div>
+    </div>
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận Hành động</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="deleteModalBody">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Xóa</button>
+                </div>
+            </div>
         </div>
     </div>
     <script src="~/vendor/jquery/jquery.min.js"></script>

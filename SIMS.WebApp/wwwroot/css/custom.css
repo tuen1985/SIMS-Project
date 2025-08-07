@@ -83,14 +83,6 @@
     padding-right: 0;
 }
 
-html, body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    height: 100%;
-    width: 100%;
-}
-
 .login-page-body,
 .login-page-body .container-fluid {
     height: 100vh;
@@ -306,3 +298,300 @@ html, body {
         top: 38px;
     }
 }
+
+/* === KHỐI MÃ SỬA LỖI CUỘN TRANG VÀ VIỀN === */
+
+/* 1. Cố định chiều cao trang và cấm body cuộn */
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+/* 2. Bắt buộc khu vực nội dung phải có chiều cao bằng màn hình
+   và tự động hiển thị thanh cuộn khi nội dung dài hơn. */
+#content-wrapper {
+    height: 100vh; /* vh = viewport height (chiều cao màn hình) */
+    overflow-y: auto;
+}
+
+/* 3. Giữ lại viền cho sidebar với độ ưu tiên cao */
+#accordionSidebar {
+    border-right: 1px solid #dddfeb !important;
+}
+
+/* 4. Đẩy nút ghim sidebar xuống cuối cùng */
+.sidebar .nav-item:last-child {
+    margin-top: auto;
+}
+
+/* === KẾT THÚC KHỐI MÃ SỬA LỖI === */
+
+
+/* Các tùy chỉnh cũ khác của bạn (giữ nguyên) */
+.sidebar-light .nav-item .nav-link i {
+    color: #fd7e14;
+}
+
+.sidebar-light .nav-item .nav-link span {
+    color: #3a3b45;
+    font-weight: 500;
+}
+
+.sidebar-light .nav-item .nav-link:hover span,
+.sidebar-light .nav-item.active .nav-link span {
+    color: #fd7e14;
+    font-weight: 700;
+}
+
+.sidebar-light .nav-item.active .nav-link i {
+    color: #fd7e14;
+}
+
+.sidebar-light .nav-item .nav-link:hover i {
+    color: #fd7e14;
+}
+
+.text-center.d-none.d-md-block {
+    text-align: center !important;
+}
+
+/* =================================================================== */
+/* === KHỐI MÃ TÙY CHỈNH VÀ SỬA LỖI GIAO DIỆN TỔNG THỂ === */
+/* =================================================================== */
+
+/* 1. NỀN TẢNG LAYOUT VÀ THANH CUỘN */
+/* Cố định chiều cao trang và cấm body cuộn */
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Bắt buộc khu vực nội dung phải tự cuộn khi bị tràn */
+#content-wrapper {
+    height: 100vh;
+    overflow-y: auto;
+}
+
+/* === MÃ MỚI SỬA LỖI NỘI DUNG BỊ CHE KHUẤT === */
+/* Đẩy nội dung chính xuống dưới thanh topbar đã được ghim */
+#content {
+    padding-top: 5.5rem; /* 4.375rem (chiều cao topbar) + một chút khoảng đệm */
+}
+
+
+/* 2. TÙY CHỈNH SIDEBAR */
+/* Giữ lại viền cho sidebar với độ ưu tiên cao */
+#accordionSidebar {
+    border-right: 1px solid #dddfeb !important;
+}
+
+/* Đẩy nút ghim sidebar xuống cuối cùng */
+.sidebar .nav-item:last-child {
+    margin-top: auto;
+}
+
+/* Tùy chỉnh màu sắc icon và chữ của sidebar */
+.sidebar-light .nav-item .nav-link i,
+.sidebar-light .nav-item.active .nav-link i,
+.sidebar-light .nav-item .nav-link:hover i {
+    color: #fd7e14;
+}
+
+.sidebar-light .nav-item .nav-link span {
+    color: #3a3b45;
+    font-weight: 500;
+}
+
+.sidebar-light .nav-item .nav-link:hover span,
+.sidebar-light .nav-item.active .nav-link span {
+    color: #fd7e14;
+    font-weight: 700;
+}
+
+
+/* 3. TÙY CHỈNH TOPBAR */
+/* Điều chỉnh vị trí thanh topbar khi nó được ghim (fixed) */
+.topbar.fixed-top {
+    margin-left: 14rem;
+    transition: margin-left 0.2s ease-in-out; /* Hiệu ứng chuyển động mượt mà */
+}
+
+/* Khi sidebar thu gọn, điều chỉnh lại vị trí topbar */
+body.sidebar-toggled .topbar.fixed-top {
+    margin-left: 6.5rem;
+}
+
+/* custom.css */
+
+/* Tùy chỉnh cho danh sách tin tức ở trang chủ */
+.list-group-item-action h5 {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #5a5c69;
+}
+
+.list-group-item-action p {
+    font-size: 0.85rem;
+}
+
+
+/* === CSS CHO TRANG CHỦ MỚI === */
+.notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+}
+
+    .notification-item .icon-box {
+        flex-shrink: 0;
+        margin-right: 1rem;
+        font-size: 1.5rem;
+        color: #b7b9cc;
+    }
+
+.notification-content p {
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+    color: #5a5c69;
+    line-height: 1.4;
+}
+
+.quick-links-bar {
+    background-color: #fd7e14;
+    border-radius: 0.35rem;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.quick-link-item {
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    transition: transform 0.2s;
+}
+
+    .quick-link-item:hover {
+        color: #fff;
+        text-decoration: none;
+        transform: translateY(-5px);
+    }
+
+    .quick-link-item i {
+        font-size: 2rem;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .quick-link-item span {
+        font-weight: bold;
+    }
+
+.quote-section h2 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    line-height: 1.4;
+}
+
+.quote-section .text-orange {
+    color: #fd7e14;
+    font-weight: 700;
+}
+
+.report-link-box {
+    display: flex;
+    align-items: center;
+    background-color: #f8f9fc;
+    border-radius: 0.35rem;
+    padding: 1.5rem;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+    border: 1px solid #e3e6f0;
+}
+
+    .report-link-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        text-decoration: none;
+    }
+
+    .report-link-box i {
+        font-size: 2rem;
+        margin-right: 1rem;
+        color: #fd7e14;
+    }
+
+    .report-link-box h5 {
+        font-weight: bold;
+        color: #5a5c69;
+        margin-bottom: 0.25rem;
+    }
+
+    .report-link-box p {
+        font-size: 0.85rem;
+        color: #858796;
+        margin-bottom: 0;
+    }
+
+/* CSS cho tiêu đề và meta của thông báo */
+.notification-title {
+    font-weight: 500;
+    color: #5a5c69;
+    line-height: 1.4;
+    margin-bottom: 0.25rem;
+}
+
+.notification-meta {
+    margin-bottom: 0;
+}
+/* === CSS CHO FOOTER MỚI === */
+.custom-footer {
+    background-color: #fff;
+    padding: 2rem 0;
+    border-top: 1px solid #e3e6f0;
+    color: #5a5c69;
+    font-size: 0.8rem; /* Giảm cỡ chữ chung cho toàn bộ footer */
+}
+
+.footer-contact-info h6 {
+    font-weight: bold;
+    margin-bottom: 1rem;
+    font-size: 0.9rem; /* Giảm cỡ chữ cho tiêu đề */
+}
+
+.footer-contact-info ul {
+    padding-left: 0;
+}
+
+    .footer-contact-info ul li {
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: flex-start;
+    }
+
+        .footer-contact-info ul li i {
+            margin-right: 10px;
+            color: #fd7e14;
+            margin-top: 5px;
+        }
+
+    .footer-contact-info ul ul {
+        padding-left: 25px;
+        margin-top: 5px;
+    }
+
+.footer-contact-info a {
+    color: #4e73df;
+    text-decoration: none;
+}
+
+    .footer-contact-info a:hover {
+        text-decoration: underline;
+    }

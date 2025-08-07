@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SIMS.Domain
 {
@@ -14,5 +15,8 @@ namespace SIMS.Domain
         // Thuộc tính điều hướng để tạo mối quan hệ một-một với Student
         // Điều này cho biết một tài khoản người dùng có thể liên kết với một hồ sơ sinh viên
         public virtual Student? Student { get; set; }
+
+        [NotMapped]
+        public string FullName => $"{FirstName} {LastName}";
     }
 }

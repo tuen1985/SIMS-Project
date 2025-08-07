@@ -1,4 +1,5 @@
-﻿#nullable disable
+﻿// File: Areas/Identity/Pages/Account/ForgotPassword.cshtml.cs
+#nullable disable
 
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -34,6 +35,7 @@ namespace SIMS.WebApp.Areas.Identity.Pages.Account
             public string Email { get; set; }
         }
 
+        // === PHƯƠNG THỨC NÀY ĐÃ ĐƯỢC THAY ĐỔI HOÀN TOÀN ===
         public async Task<IActionResult> OnPostAsync()
         {
             if (ModelState.IsValid)
@@ -41,28 +43,23 @@ namespace SIMS.WebApp.Areas.Identity.Pages.Account
                 var user = await _userManager.FindByEmailAsync(Input.Email);
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
-                    // Don't reveal that the user does not exist or is not confirmed
-                    return RedirectToPage("./ForgotPasswordConfirmation");
+                    // Vẫn trả về thành công để không tiết lộ thông tin người dùng
+                    return new JsonResult(new { success = true, message = "Nếu tài khoản của bạn tồn tại, một email đã được gửi đi." });
                 }
 
+                // Tạo mã reset
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Page(
-                    "/Account/ResetPassword",
-                    pageHandler: null,
-                    values: new { area = "Identity", code },
-                    protocol: Request.Scheme);
 
-                // Lưu ý: Bạn cần cấu hình IEmailSender để chức năng này hoạt động
-                await _emailSender.SendEmailAsync(
-                    Input.Email,
-                    "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                // Logic gửi email (được giả lập)
+                // await _emailSender.SendEmailAsync(...)
 
-                return RedirectToPage("./ForgotPasswordConfirmation");
+                // Trả về thành công VÀ KÈM THEO MÃ RESET cho mục đích demo
+                return new JsonResult(new { success = true, resetCode = code });
             }
 
-            return Page();
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+            return new JsonResult(new { success = false, errors = errors });
         }
     }
 }

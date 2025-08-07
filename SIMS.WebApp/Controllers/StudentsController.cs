@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization; // Thêm using này
 
 namespace SIMS.WebApp.Controllers
 {
-    [Authorize(Roles = "Admin, Department Staff")] // Chỉ Admin và NV Phòng Đào tạo được truy cập
+    [Authorize(Roles = "Department Staff")] // Chỉ Admin và NV Phòng Đào tạo được truy cập
     public class StudentsController : Controller
     {
         private readonly IStudentRepository _studentRepository;

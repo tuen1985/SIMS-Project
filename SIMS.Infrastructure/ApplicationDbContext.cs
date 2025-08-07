@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore; // Thêm using này
 using Microsoft.EntityFrameworkCore;
 using SIMS.Domain;
+using System.Diagnostics;
 
 namespace SIMS.Infrastructure
 {
@@ -19,6 +20,9 @@ namespace SIMS.Infrastructure
         // Tuy nhiên, bạn vẫn cần giữ lại các DbSet cho các domain model khác của bạn
         public DbSet<Student> Students { get; set; } = default!;
         public DbSet<Course> Courses { get; set; } = default!;
+        public DbSet<Classroom> Classrooms { get; set; } = default!;
+        public DbSet<Enrollment> Enrollments { get; set; } = default!;
+        public DbSet<Grade> Grades { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

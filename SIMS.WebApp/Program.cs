@@ -44,7 +44,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-        var task = IdentityDataSeeder.SeedRolesAndAdminUserAsync(services);
+        var task = IdentityDataSeeder.SeedDataAsync(services);
         task.Wait();
     }
     catch (Exception ex)

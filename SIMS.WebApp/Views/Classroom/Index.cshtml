@@ -1,0 +1,43 @@
+﻿@model IEnumerable<SIMS.Domain.Classroom>
+
+@{
+    ViewData["Title"] = "Danh sách Lớp học";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Tạo Lớp học mới</a>
+</p>
+
+<table class="table table-hover">
+    <thead class="thead-light">
+        <tr>
+            <th>Tên Lớp học</th>
+            <th>Học kỳ</th>
+            <th>Tên Khóa học</th>
+            <th>Giảng viên</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.ClassName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Semester)</td>
+                <td>@Html.DisplayFor(modelItem => item.Course.CourseName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Faculty.FullName)</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Chi tiết</a> |
+
+                    <form asp-action="Delete" method="post" class="d-inline delete-form-trigger"
+                          data-message="Bạn có chắc chắn muốn xóa toàn bộ lớp học này không? Mọi dữ liệu đăng ký của sinh viên trong lớp cũng sẽ bị xóa.">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

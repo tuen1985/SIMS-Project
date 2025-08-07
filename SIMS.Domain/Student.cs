@@ -39,6 +39,9 @@ namespace SIMS.Domain
         [Display(Name = "Email")]
         public string Email { get; set; } = string.Empty;
 
+        // Trong file Domain/Student.cs
+        public string FullName => $"{LastName} {FirstName}";
+
         // ==========================================================
         //      THUỘC TÍNH MỚI ĐỂ LIÊN KẾT VỚI TÀI KHOẢN USER
         // ==========================================================

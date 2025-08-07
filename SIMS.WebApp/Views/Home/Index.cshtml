@@ -1,8 +1,92 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Trang chủ";
+    var userName = User.Identity.Name; // Lấy email người dùng, bạn có thể thay bằng FullName nếu muốn
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row align-items-center mb-4">
+    <div class="col-lg-7">
+        <h1 class="h3 mb-4 text-gray-800">Welcome back, <strong>@userName</strong></h1>
+        <div class="notification-list">
+            <div class="notification-item">
+                <div class="icon-box">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="notification-content">
+                    <h6 class="notification-title">[KHẢO THÍ BTEC]: DANH SÁCH SINH VIÊN ĐỦ ĐIỀU KIỆN THI TIẾNG ANH SUMMER 1 KỲ SUMMER 2025 - PART 1 (NGÀY THI 07-08/08/2025)</h6>
+                    <p class="notification-meta">
+                        <small class="text-muted">Expired: 08/08/25</small>
+                    </p>
+                </div>
+            </div>
+            <div class="notification-item">
+                <div class="icon-box">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="notification-content">
+                    <p class="mb-0">THÔNG BÁO THAY ĐỔI ĐIỀU PHÍ MÔN HỌC LẠI</p>
+                    <small class="text-muted">01/08/25 16:42</small>
+                </div>
+            </div>
+            <div class="notification-item">
+                <div class="icon-box">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <div class="notification-content">
+                    <p class="mb-0">THÔNG BÁO: ĐĂNG KÝ CHUYÊN NGÀNH/CHUYỂN NGÀNH, CHUYỂN CƠ SỞ, BẢO LƯU, MIỄN GIẢM HỌC PHẦN - KỲ FALL 2025</p>
+                    <small class="text-muted">28/07/25 11:30</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5 d-none d-lg-block text-center">
+        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;" src="/img/undraw_add-tasks_mvlb (1).svg" alt="Online Learning">
+    </div>
+</div>
+
+<div class="quick-links-bar">
+    <a href="#" class="quick-link-item">
+        <i class="fas fa-newspaper"></i>
+        <span>News</span>
+    </a>
+    <a href="#" class="quick-link-item">
+        <i class="fas fa-question-circle"></i>
+        <span>Q&A</span>
+    </a>
+    <a href="#" class="quick-link-item">
+        <i class="fas fa-rocket"></i>
+        <span>Application</span>
+    </a>
+</div>
+
+
+<div class="row align-items-center mt-5">
+    <div class="col-lg-5 d-none d-lg-block text-center">
+        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;" src="/img/undraw_drag-and-drop_v4po.svg" alt="Working">
+    </div>
+    <div class="col-lg-7">
+        <div class="quote-section">
+            <h2>“However difficult life may seem, there is always <span class="text-orange">something you can do</span> and succeed at.”</h2>
+            <p class="text-right font-weight-bold">- STEVEN HAWKING</p>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-6 mb-3">
+                <a href="#" class="report-link-box">
+                    <i class="fas fa-chart-pie"></i>
+                    <div>
+                        <h5>Academic Report</h5>
+                        <p>Information about your learning status</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6 mb-3">
+                <a href="#" class="report-link-box">
+                    <i class="fas fa-graduation-cap"></i>
+                    <div>
+                        <h5>Mark Report</h5>
+                        <p>Information about your current marks and GPA</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
