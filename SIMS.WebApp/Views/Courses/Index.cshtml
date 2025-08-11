@@ -10,16 +10,16 @@
     <a asp-action="Create" class="btn btn-primary">Create New Course</a>
 </p>
 <table class="table">
-    <thead>
+    <thead class="thead-light">
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CourseCode)
+                @Html.DisplayNameFor(model => model.First().CourseCode)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CourseName)
+                @Html.DisplayNameFor(model => model.First().CourseName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Credits)
+                @Html.DisplayNameFor(model => model.First().Credits)
             </th>
             <th></th>
         </tr>

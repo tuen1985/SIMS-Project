@@ -20,18 +20,16 @@
                 <td>@item.Classroom?.Faculty?.FullName</td>
                 <td>
                     @{
-                        // Get the current date
                         var today = DateTime.Today;
-                        // Determine status based on dates
-                        if (item.Classroom != null) // Ensure classroom is not null before checking dates
+                        if (item.Grade != null && item.Grade.Score.HasValue)
+                        {
+                            <span class="badge badge-success">Completed</span>
+                        }
+                        else if (item.Classroom != null)
                         {
                             if (today < item.Classroom.StartDate)
                             {
                                 <span class="badge badge-secondary">Upcoming</span>
-                            }
-                            else if (today > item.Classroom.EndDate)
-                            {
-                                <span class="badge badge-success">Completed</span>
                             }
                             else
                             {

@@ -31,6 +31,7 @@ namespace SIMS.WebApp.Controllers
                 .Where(e => e.StudentId == student.Id)
                 .Include(e => e.Classroom.Course)
                 .Include(e => e.Classroom.Faculty)
+                .Include(e => e.Grade)
                 .ToListAsync();
 
             return View(enrollments);

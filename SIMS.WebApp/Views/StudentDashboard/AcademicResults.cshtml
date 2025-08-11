@@ -6,10 +6,10 @@
     string GetLetterGrade(float? score)
     {
         if (!score.HasValue) return "N/A"; // Not Available
-        if (score < 65) return "F";
-        if (score >= 65 && score <= 79) return "P";
-        if (score >= 80 && score <= 89) return "M";
-        if (score >= 90 && score <= 100) return "D";
+        if (score < 65) return "Fail";
+        if (score >= 65 && score <= 79) return "Pass";
+        if (score >= 80 && score <= 89) return "Merit";
+        if (score >= 90 && score <= 100) return "Distinction";
         return "N/A";
     }
 
@@ -48,7 +48,7 @@
                             <td>@item.Classroom.Course.CourseCode</td>
                             <td>@item.Classroom.Course.CourseName</td>
                             <td>@item.Classroom.Semester</td>
-                            <td>@(item.Grade?.Score.HasValue == true ? item.Grade.Score.Value.ToString("0.0") : "Not available")</td>
+                            <td>@(item.Grade?.Score.HasValue == true ? item.Grade.Score.Value.ToString("0") : "Not available")</td>
                             <td>
                                 @if (letterGrade != "N/A")
                                 {

@@ -53,9 +53,15 @@ namespace SIMS.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ClassroomCreateViewModel viewModel)
         {
+            // KIỂM TRA TÊN LỚP TRÙNG LẶP
+            var classroomExists = await _context.Classrooms.AnyAsync(c => c.ClassName == viewModel.ClassName);
+            if (classroomExists)
+            {
+                ModelState.AddModelError("ClassName", "A classroom with this name already exists.");
+            }
+
             if (ModelState.IsValid)
             {
-                // Chuyển dữ liệu từ ViewModel sang Domain Model để lưu
                 var classroom = new Classroom
                 {
                     ClassName = viewModel.ClassName,
