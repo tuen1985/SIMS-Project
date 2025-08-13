@@ -74,7 +74,11 @@
                     }
                     else if (user.AccountStatus != "Account Exists")
                     {
-                        <span class="text-muted">No actions available</span>
+                        <form asp-action="DeleteUser" method="post" class="d-inline delete-form-trigger"
+                              data-message="Are you sure you want to PERMANENTLY DELETE the account '@user.Email'? This action cannot be undone.">
+                            <input type="hidden" name="userId" value="@user.UserId" />
+                            <button type="submit" class="button-as-link">Delete</button>
+                        </form>
                     }
                 </td>
             </tr>
