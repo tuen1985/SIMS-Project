@@ -7,8 +7,9 @@ namespace SIMS.WebApp.ViewModels
 {
     public class CreateUserViewModel
     {
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "Email cannot be empty.")]
+        [EmailAddress(ErrorMessage = "Invalid email format.")]
+        [Display(Name = "Email")]
         public string Email { get; set; } = string.Empty;
 
         [Required]

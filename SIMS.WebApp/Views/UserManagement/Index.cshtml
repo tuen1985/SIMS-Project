@@ -7,10 +7,10 @@
 
 <h1>User Management</h1>
 
-@if (TempData["CannotDeleteMessage"] != null)
+@if (TempData["CannotBlockMessage"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        @TempData["CannotDeleteMessage"]
+        @TempData["CannotBlockMessage"]
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -26,6 +26,7 @@
                     <option value="Student" selected="@(currentFilter == "Student")">Student</option>
                     <option value="Faculty" selected="@(currentFilter == "Faculty")">Faculty</option>
                     <option value="Department Staff" selected="@(currentFilter == "Department Staff")">Department Staff</option>
+                    <option value="Blocked Accounts" selected="@(currentFilter == "Blocked Accounts")">Blocked Accounts</option>
                 </select>
                 <div class="input-group-append">
                     <button type="submit" class="btn btn-primary">Filter</button>
@@ -48,47 +49,55 @@
     <tbody>
         @foreach (var user in Model)
         {
-            <tr>
+            <tr class="@(user.IsBlocked ? "text-muted bg-light" : "")">
                 <td>@(user.FirstName + " " + user.LastName)</td>
                 <td>@user.Email</td>
                 <td>
                     <span class="badge badge-pill
-                                      @(user.Role == "Admin" ? "badge-danger" :
-                                                              user.Role == "Faculty" ? "badge-success" :
-                                                              user.Role == "Department Staff" ? "badge-info" : "badge-secondary")">
+                                   @(user.Role == "Admin" ? "badge-danger" :
+                                                           user.Role == "Faculty" ? "badge-success" :
+                                                           user.Role == "Department Staff" ? "badge-info" : "badge-secondary")">
                     @user.Role
                 </span>
             </td>
             <td>
-                @if (user.AccountStatus == "Account Exists")
+                @if (user.IsBlocked)
                     {
-                        <span class="text-success font-weight-bold">@user.AccountStatus</span>
+                        <span class="text-danger font-weight-bold">Blocked</span>
+                    }
+                    else if (user.HasAccount)
+                    {
+                        <span class="text-success font-weight-bold">Active</span>
                     }
                     else
                     {
-                        <span class="text-muted">@user.AccountStatus</span>
+                        <span class="text-muted">Profile Only</span>
                     }
                 </td>
                 <td>
-                    @if (user.AccountStatus == "Account Exists" && user.Role != "Admin")
+                    @if (user.HasAccount && user.Role != "Admin")
                     {
-                        <a asp-action="ManageRoles" asp-route-userId="@user.UserId" class="action-link">Manage Roles</a>
-
-                        <span class="mx-2">|</span>
-
-                        <form asp-action="DeleteUser" method="post" class="d-inline delete-form-trigger"
-                              data-message="Are you sure you want to PERMANENTLY DELETE the account '@user.Email'? This action cannot be undone.">
-                            <input type="hidden" name="userId" value="@user.UserId" />
-                            <button type="submit" class="button-as-link">Delete</button>
-                        </form>
+                        @* ĐÃ XÓA "Manage Roles" KHỎI ĐÂY *@
+                        @if (user.IsBlocked)
+                        {
+                            <form asp-action="UnblockUser" method="post" class="d-inline delete-form-trigger"
+                                  data-message="Are you sure you want to UNBLOCK the account '@user.Email'?">
+                                <input type="hidden" name="userId" value="@user.UserId" />
+                                <button type="submit" class="button-as-link text-success">Unblock</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-action="BlockUser" method="post" class="d-inline delete-form-trigger"
+                                  data-message="Are you sure you want to BLOCK the account '@user.Email'? The user will not be able to log in.">
+                                <input type="hidden" name="userId" value="@user.UserId" />
+                                <button type="submit" class="button-as-link text-danger">Block</button>
+                            </form>
+                        }
                     }
-                    else if (user.AccountStatus != "Account Exists")
+                    else if (!user.HasAccount)
                     {
-                        <form asp-action="DeleteUser" method="post" class="d-inline delete-form-trigger"
-                              data-message="Are you sure you want to PERMANENTLY DELETE the account '@user.Email'? This action cannot be undone.">
-                            <input type="hidden" name="userId" value="@user.UserId" />
-                            <button type="submit" class="button-as-link">Delete</button>
-                        </form>
+                        <span class="text-muted">No actions available</span>
                     }
                 </td>
             </tr>

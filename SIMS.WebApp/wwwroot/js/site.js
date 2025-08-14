@@ -3,40 +3,35 @@
 
 // Write your JavaScript code.
 // site.js
+$(function () {
+    var formToSubmit;
 
-$(function () { // Tương đương với $(document).ready()
-
-    var formToSubmit; // Biến để lưu trữ form sẽ được submit
-
-    // Bắt sự kiện click trên BẤT KỲ nút submit nào nằm trong form có class .delete-form-trigger
-    // Thay vì bắt sự kiện 'submit', chúng ta bắt sự kiện 'click' trên nút bấm.
-    // Điều này giúp tránh các vấn đề phức tạp liên quan đến việc ngăn chặn và kích hoạt lại sự kiện submit.
+    // Đổi tên class trigger để dùng chung cho nhiều hành động
     $('.delete-form-trigger button[type="submit"]').on('click', function (e) {
-
-        // Ngăn chặn hành vi mặc định của nút (là submit form)
         e.preventDefault();
-
-        // Tìm đến form cha của nút bấm này và lưu lại
         formToSubmit = $(this).closest('form');
 
-        // Lấy thông báo tùy chỉnh từ thuộc tính data-message của form
-        let message = formToSubmit.data('message');
+        // Lấy thông báo và hành động từ thuộc tính data-* của button
+        let message = formToSubmit.data('message') || 'Are you sure you want to perform this action?';
+        let action = $(this).text().trim(); // Lấy text của nút bấm (Block, Unblock)
+        let confirmButton = $('#confirmActionButton');
 
-        // Nếu không có thông báo tùy chỉnh, dùng thông báo mặc định
-        let defaultMessage = 'Bạn có chắc chắn muốn thực hiện hành động này không?';
+        // Cập nhật nội dung modal
+        $('#deleteModalBody').text(message);
 
-        // Cập nhật nội dung của modal
-        $('#deleteModalBody').text(message || defaultMessage);
+        // Cập nhật nút xác nhận
+        confirmButton.text(action);
 
-        // Hiển thị modal xác nhận
+        // Cập nhật màu sắc nút cho phù hợp
+        confirmButton.removeClass('btn-danger btn-success').addClass(action === 'Block' ? 'btn-danger' : 'btn-success');
+
         $('#confirmDeleteModal').modal('show');
     });
 
-    // Bắt sự kiện click của nút "Xóa" bên trong modal
-    $('#confirmDeleteButton').on('click', function () {
-        // Nếu có một form đã được lưu, hãy submit nó
+    $('#confirmActionButton').on('click', function () {
         if (formToSubmit) {
             formToSubmit.submit();
         }
     });
 });
+

@@ -17,7 +17,6 @@ namespace SIMS.Infrastructure
         // public DbSet<Student> Students { get; set; }
         // public DbSet<Course> Courses { get; set; }
 
-        // Tuy nhiên, bạn vẫn cần giữ lại các DbSet cho các domain model khác của bạn
         public DbSet<Student> Students { get; set; } = default!;
         public DbSet<Course> Courses { get; set; } = default!;
         public DbSet<Classroom> Classrooms { get; set; } = default!;

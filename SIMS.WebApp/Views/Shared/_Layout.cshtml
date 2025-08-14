@@ -64,9 +64,15 @@
                         <span>Add User</span>
                     </a>
                 </li>
+                <li class="nav-item @(currentController == "Students" ? "active" : "")">
+                    <a class="nav-link" asp-controller="Students" asp-action="Index">
+                        <i class="fas fa-fw fa-user-graduate"></i>
+                        <span>Student Management</span>
+                    </a>
+                </li>
             }
 
-            @* MENU FOR DEPARTMENT STAFF *@
+            @* MENU FOR ADMIN & DEPARTMENT STAFF *@
             @if (User.IsInRole("Department Staff"))
             {
                 <li class="nav-item @(currentController == "Classroom" ? "active" : "")">
@@ -79,12 +85,6 @@
                     <a class="nav-link" asp-controller="Courses" asp-action="Index">
                         <i class="fas fa-fw fa-book"></i>
                         <span>Course Management</span>
-                    </a>
-                </li>
-                <li class="nav-item @(currentController == "Students" ? "active" : "")">
-                    <a class="nav-link" asp-controller="Students" asp-action="Index">
-                        <i class="fas fa-fw fa-user-graduate"></i>
-                        <span>Student Management</span>
                     </a>
                 </li>
             }
@@ -224,7 +224,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>
+                    @* THAY ĐỔI ID VÀ TEXT CỦA NÚT BẤM *@
+                    <button type="button" class="btn btn-danger" id="confirmActionButton">Confirm</button>
                 </div>
             </div>
         </div>

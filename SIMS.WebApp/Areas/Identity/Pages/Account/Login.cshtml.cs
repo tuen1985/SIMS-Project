@@ -1,8 +1,4 @@
-// File: SIMS.WebApp/Areas/Identity/Pages/Account/Login.cshtml.cs
-// ... (c·c using v‡ ph?n ??u class gi? nguyÍn)
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
+Ôªø#nullable disable
 
 using System;
 using System.Collections.Generic;
@@ -23,14 +19,14 @@ namespace SIMS.WebApp.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager; // ThÍm UserManager
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
 
         public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger, UserManager<ApplicationUser> userManager)
         {
             _signInManager = signInManager;
             _logger = logger;
-            _userManager = userManager; // Kh?i t?o UserManager
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -57,15 +53,14 @@ namespace SIMS.WebApp.Areas.Identity.Pages.Account
             public bool RememberMe { get; set; }
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
-            // === LOGIC M?I ===
-            // N?u ng??i d˘ng ?„ ??ng nh?p, chuy?n h??ng h? ??n trang chÌnh
+            // === LOGIC M·ªöI: Chuy·ªÉn h∆∞·ªõng n·∫øu ng∆∞·ªùi d√πng ƒë√£ ƒëƒÉng nh·∫≠p ===
             if (_signInManager.IsSignedIn(User))
             {
-                Response.Redirect(Url.Content("~/"));
+                return LocalRedirect(Url.Content("~/"));
             }
-            // =================
+            // =========================================================
 
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
@@ -74,19 +69,17 @@ namespace SIMS.WebApp.Areas.Identity.Pages.Account
 
             returnUrl ??= Url.Content("~/");
 
-            // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             ReturnUrl = returnUrl;
+            return Page();
         }
 
-        // ... (ph??ng th?c OnPostAsync gi? nguyÍn)
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
@@ -113,10 +106,12 @@ namespace SIMS.WebApp.Areas.Identity.Pages.Account
                 {
                     return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
                 }
+
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
+                    ModelState.AddModelError(string.Empty, "This account has been blocked. Please contact an administrator.");
+                    return Page();
                 }
                 else
                 {

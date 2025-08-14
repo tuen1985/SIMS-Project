@@ -60,9 +60,9 @@ namespace SIMS.WebApp.Areas.Identity.Pages.Account
             public string Role { get; set; }
 
             [Required(ErrorMessage = "Email is required.")]
-            [EmailAddress]
+            [EmailAddress(ErrorMessage = "Invalid email format.")]
             [Display(Name = "Email")]
-            public string Email { get; set; }
+            public string Email { get; set; } = string.Empty;
 
             [Required(ErrorMessage = "Password is required.")]
             [StringLength(100, ErrorMessage = "Password must be at least 6 characters.", MinimumLength = 6)]

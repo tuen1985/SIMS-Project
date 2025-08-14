@@ -1,5 +1,9 @@
 ﻿@model IEnumerable<SIMS.Domain.Student>
 
+@{
+    ViewData["Title"] = "Student List";
+}
+
 <h1>Student List</h1>
 
 @if (TempData["CannotDeleteMessage"] != null)
@@ -12,12 +16,9 @@
     </div>
 }
 
-@if (User.IsInRole("Admin"))
-{
-    <p>
-        <a asp-action="Create" class="btn btn-primary">Create New Student</a>
-    </p>
-}
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Student</a>
+</p>
 
 <table class="table table-hover">
     <thead class="thead-light">
@@ -48,18 +49,13 @@
                     @Html.DisplayFor(modelItem => student.Email)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@student.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@student.Id">Details</a>
-
                     @if (User.IsInRole("Admin"))
                     {
-                        <text> | </text>
-                        <form asp-action="Delete" method="post" class="d-inline delete-form-trigger"
-                              data-message="Are you sure you want to delete the student '@student.FullName'?">
-                            <input type="hidden" name="id" value="@student.Id" />
-                            <button type="submit" class="button-as-link">Delete</button>
-                        </form>
+                        <a asp-action="Edit" asp-route-id="@student.Id">Edit</a>
+                
+                        <text> |</text>
                     }
+                    <a asp-action="Details" asp-route-id="@student.Id">Details</a>
                 </td>
             </tr>
         }
