@@ -167,8 +167,6 @@ namespace SIMS.WebApp.Controllers
             return RedirectToAction("Details", new { id = classroomId });
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
             var classroom = await _context.Classrooms

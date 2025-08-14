@@ -26,7 +26,8 @@
                     </td>
                     <td>@Model[i].StudentName</td>
                     <td>
-                        <input asp-for="@Model[i].Score" class="form-control" type="number" min="0" max="100" />
+                        <input asp-for="@Model[i].Score" class="form-control" />
+                        <span asp-validation-for="@Model[i].Score" class="text-danger"></span>
                     </td>
                 </tr>
             }

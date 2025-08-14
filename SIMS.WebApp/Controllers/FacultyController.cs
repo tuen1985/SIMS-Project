@@ -66,42 +66,79 @@ namespace SIMS.WebApp.Controllers
             return View(viewModel);
         }
 
-        // POST: /Faculty/ManageGrades
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ManageGrades(int classroomId, List<GradeUpdateViewModel> studentGrades)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                foreach (var studentGrade in studentGrades)
-                {
-                    var enrollment = await _context.Enrollments
-                        .Include(e => e.Grade)
-                        .FirstOrDefaultAsync(e => e.Id == studentGrade.EnrollmentId);
+                // Khi ModelState không hợp lệ, cần phải tải lại dữ liệu cần thiết cho view
+                // Bao gồm thông tin về lớp học và sinh viên
+                var classroom = await _context.Classrooms
+                    .Include(c => c.Enrollments)
+                        .ThenInclude(e => e.Student)
+                    .Include(c => c.Enrollments)
+                        .ThenInclude(e => e.Grade)
+                    .FirstOrDefaultAsync(c => c.Id == classroomId);
 
-                    if (enrollment != null)
+                if (classroom == null || classroom.FacultyId != _userManager.GetUserId(User))
+                {
+                    return NotFound();
+                }
+
+                // Cập nhật lại ViewModel từ dữ liệu mới nhất trong DB, nhưng giữ lại các giá trị nhập từ form
+                var viewModel = classroom.Enrollments.Select(e => new GradeUpdateViewModel
+                {
+                    EnrollmentId = e.Id,
+                    StudentName = e.Student.FullName,
+                    StudentCode = e.Student.StudentCode,
+                    Score = e.Grade?.Score
+                }).ToList();
+
+                // Gán các giá trị điểm đã nhập từ form không hợp lệ trở lại cho ViewModel
+                // để người dùng không phải nhập lại
+                foreach (var submittedGrade in studentGrades)
+                {
+                    var vm = viewModel.FirstOrDefault(x => x.EnrollmentId == submittedGrade.EnrollmentId);
+                    if (vm != null)
                     {
-                        if (enrollment.Grade != null)
-                        {
-                            // Cập nhật điểm đã có
-                            enrollment.Grade.Score = studentGrade.Score;
-                        }
-                        else if (studentGrade.Score.HasValue)
-                        {
-                            // Tạo điểm mới nếu chưa có và điểm được nhập
-                            var newGrade = new Grade
-                            {
-                                EnrollmentId = studentGrade.EnrollmentId,
-                                Score = studentGrade.Score
-                            };
-                            _context.Grades.Add(newGrade);
-                        }
+                        vm.Score = submittedGrade.Score;
                     }
                 }
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+
+                ViewBag.ClassroomId = classroomId;
+                ViewBag.ClassName = classroom.ClassName;
+
+                // Trả về view với dữ liệu đầy đủ và lỗi ModelState
+                return View(viewModel);
             }
-            return View(studentGrades);
+
+            // Logic lưu điểm khi ModelState hợp lệ
+            foreach (var studentGrade in studentGrades)
+            {
+                var enrollment = await _context.Enrollments
+                    .Include(e => e.Grade)
+                    .FirstOrDefaultAsync(e => e.Id == studentGrade.EnrollmentId);
+
+                if (enrollment != null)
+                {
+                    if (enrollment.Grade != null)
+                    {
+                        enrollment.Grade.Score = studentGrade.Score;
+                    }
+                    else if (studentGrade.Score.HasValue)
+                    {
+                        var newGrade = new Grade
+                        {
+                            EnrollmentId = studentGrade.EnrollmentId,
+                            Score = studentGrade.Score
+                        };
+                        _context.Grades.Add(newGrade);
+                    }
+                }
+            }
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
     }
 }
