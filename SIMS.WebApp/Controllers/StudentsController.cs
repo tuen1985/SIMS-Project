@@ -4,6 +4,7 @@ using SIMS.Application.Repositories;
 using SIMS.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using SIMS.Infrastructure; // This using statement is necessary to access ApplicationDbContext
 
 namespace SIMS.WebApp.Controllers
 {
@@ -12,11 +13,14 @@ namespace SIMS.WebApp.Controllers
     {
         private readonly IStudentRepository _studentRepository;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _context; // Add ApplicationDbContext here
 
-        public StudentsController(IStudentRepository studentRepository, UserManager<ApplicationUser> userManager)
+        // Update the constructor to include ApplicationDbContext
+        public StudentsController(IStudentRepository studentRepository, UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _studentRepository = studentRepository;
             _userManager = userManager;
+            _context = context; // Initialize the context
         }
 
         // GET: Students
@@ -41,7 +45,6 @@ namespace SIMS.WebApp.Controllers
 
             return View(student);
         }
-
 
         // GET: Students/Create
         public IActionResult Create()
@@ -111,6 +114,7 @@ namespace SIMS.WebApp.Controllers
         }
 
         // GET: Students/Delete/5
+        [Authorize(Roles = "Admin")] // Restrict this action to Admin role for the check
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,6 +134,7 @@ namespace SIMS.WebApp.Controllers
         // POST: Students/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")] // Restrict this action to Admin role
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             // Step 1: Find the student profile to delete
@@ -138,6 +143,20 @@ namespace SIMS.WebApp.Controllers
             {
                 return NotFound();
             }
+
+            // === NEW LOGIC: CHECK FOR CLASSROOM ENROLLMENTS ===
+            var enrollments = await _context.Enrollments
+                .Include(e => e.Classroom)
+                .Where(e => e.StudentId == id)
+                .ToListAsync();
+
+            if (enrollments.Any())
+            {
+                var classroomNames = string.Join(", ", enrollments.Select(e => e.Classroom.ClassName));
+                TempData["CannotDeleteMessage"] = $"Cannot delete student '{student.FullName}' because they are enrolled in the following classes: {classroomNames}. Please un-enroll the student from these classes first.";
+                return RedirectToAction(nameof(Index));
+            }
+            // ===================================================
 
             // Step 2: Check if this student has an associated account
             if (!string.IsNullOrEmpty(student.ApplicationUserId))
@@ -151,7 +170,6 @@ namespace SIMS.WebApp.Controllers
                     if (!result.Succeeded)
                     {
                         // Handle the error if the account deletion fails
-                        // In this case, we'll stop the deletion to ensure data integrity
                         ModelState.AddModelError("", "Could not delete the associated user account.");
                         return View("Delete", student);
                     }

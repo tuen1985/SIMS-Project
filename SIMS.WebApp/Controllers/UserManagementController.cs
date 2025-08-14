@@ -220,7 +220,7 @@ public class UserManagementController : Controller
         var user = await _userManager.FindByIdAsync(userId);
         if (user != null)
         {
-            // Không cho phép xóa tài khoản Admin
+            // Ngăn không cho xóa tài khoản Admin
             if (await _userManager.IsInRoleAsync(user, "Admin"))
             {
                 return RedirectToAction("Index");
@@ -232,7 +232,6 @@ public class UserManagementController : Controller
                 var classrooms = await _context.Classrooms
                     .Where(c => c.FacultyId == userId)
                     .ToListAsync();
-
                 if (classrooms.Any())
                 {
                     var classroomNames = string.Join(", ", classrooms.Select(c => c.ClassName));
@@ -240,19 +239,33 @@ public class UserManagementController : Controller
                     return RedirectToAction("Index");
                 }
             }
-            // === KẾT THÚC LOGIC KIỂM TRA ===
+            // === KẾT THÚC LOGIC KIỂM TRA CHO GIẢNG VIÊN ===
 
-            // Nếu người dùng là Student, cần xóa cả hồ sơ Student liên quan
+            // === BẮT ĐẦU LOGIC MỚI: KIỂM TRA CHO SINH VIÊN ===
             if (await _userManager.IsInRoleAsync(user, "Student"))
             {
                 var studentProfile = await _context.Students.FirstOrDefaultAsync(s => s.ApplicationUserId == userId);
                 if (studentProfile != null)
                 {
+                    var enrollments = await _context.Enrollments
+                        .Include(e => e.Classroom)
+                        .Where(e => e.StudentId == studentProfile.Id)
+                        .ToListAsync();
+
+                    if (enrollments.Any())
+                    {
+                        var classroomNames = string.Join(", ", enrollments.Select(e => e.Classroom.ClassName));
+                        TempData["CannotDeleteMessage"] = $"Cannot delete student '{studentProfile.FullName}' because they are enrolled in the following classes: {classroomNames}. Please un-enroll the student from these classes first.";
+                        return RedirectToAction("Index");
+                    }
+                    // Nếu không có đăng ký, thì xóa hồ sơ sinh viên
                     _context.Students.Remove(studentProfile);
                     await _context.SaveChangesAsync();
                 }
             }
+            // === KẾT THÚC LOGIC MỚI ===
 
+            // Cuối cùng, xóa tài khoản người dùng
             await _userManager.DeleteAsync(user);
         }
 
