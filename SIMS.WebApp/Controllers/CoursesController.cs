@@ -12,14 +12,16 @@ using SIMS.Application.Repositories; // Thêm using này
 
 namespace SIMS.WebApp.Controllers
 {
-    [Authorize(Roles = "Department Staff")] // Chỉ Admin và NV Phòng Đào tạo được truy cập
+    [Authorize(Roles = "Department Staff")]
     public class CoursesController : Controller
     {
-        private readonly ICourseRepository _courseRepository; // Thay thế DbContext bằng Repository
+        private readonly ICourseRepository _courseRepository;
+        private readonly ApplicationDbContext _context; // Thêm ApplicationDbContext
 
-        public CoursesController(ICourseRepository courseRepository) // Dependency Injection cho Repository
+        public CoursesController(ICourseRepository courseRepository, ApplicationDbContext context) // Cập nhật constructor
         {
             _courseRepository = courseRepository;
+            _context = context; // Khởi tạo context
         }
 
         // GET: Courses
@@ -135,6 +137,22 @@ namespace SIMS.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            // === LOGIC MỚI: Kiểm tra xem khóa học có được sử dụng trong bất kỳ lớp học nào không ===
+            var classrooms = await _context.Classrooms
+                .Where(c => c.CourseId == id)
+                .ToListAsync();
+
+            if (classrooms.Any())
+            {
+                // Nếu có, hiển thị thông báo lỗi và ngăn xóa
+                var course = await _courseRepository.GetByIdAsync(id);
+                var classroomNames = string.Join(", ", classrooms.Select(c => c.ClassName));
+                TempData["CannotDeleteMessage"] = $"Cannot delete course '{course.CourseName}' because it is used in the following classes: {classroomNames}. Please delete these classes first.";
+                return RedirectToAction(nameof(Index));
+            }
+            // =========================================================================================
+
+            // Nếu không có lớp học nào sử dụng khóa học này, tiến hành xóa
             await _courseRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }

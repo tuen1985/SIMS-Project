@@ -1,47 +1,58 @@
 ﻿@model IEnumerable<SIMS.Domain.Course>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Course Management";
 }
 
-<h1>Course Management</h1>
+<h1>@ViewData["Title"]</h1>
+
+@if (TempData["CannotDeleteMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["CannotDeleteMessage"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
 
 <p>
     <a asp-action="Create" class="btn btn-primary">Create New Course</a>
 </p>
 <table class="table">
-    <thead class="thead-light">
+    <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.First().CourseCode)
+                @Html.DisplayNameFor(model => model.CourseCode)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().CourseName)
+                @Html.DisplayNameFor(model => model.CourseName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().Credits)
+                @Html.DisplayNameFor(model => model.Credits)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CourseCode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CourseName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Credits)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Credits)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

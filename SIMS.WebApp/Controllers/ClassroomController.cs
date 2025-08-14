@@ -171,24 +171,25 @@ namespace SIMS.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            // Tìm lớp học cần xóa, bao gồm cả các lượt đăng ký liên quan
             var classroom = await _context.Classrooms
                 .Include(c => c.Enrollments)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (classroom != null)
             {
-                // Xóa tất cả các lượt đăng ký trong lớp học này trước
-                _context.Enrollments.RemoveRange(classroom.Enrollments);
+                // === LOGIC MỚI: KIỂM TRA NẾU CÓ SINH VIÊN TRONG LỚP ===
+                if (classroom.Enrollments.Any())
+                {
+                    TempData["CannotDeleteMessage"] = $"Cannot delete class '{classroom.ClassName}' because there are {classroom.Enrollments.Count} students enrolled. Please remove all students first.";
+                    return RedirectToAction(nameof(Index));
+                }
+                // =======================================================
 
-                // Sau đó mới xóa lớp học
+                // Nếu không có sinh viên, tiến hành xóa lớp học
                 _context.Classrooms.Remove(classroom);
-
-                // Lưu thay đổi vào database
                 await _context.SaveChangesAsync();
             }
 
-            // Chuyển hướng về lại trang danh sách
             return RedirectToAction(nameof(Index));
         }
 
