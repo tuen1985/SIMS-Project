@@ -220,12 +220,27 @@ public class UserManagementController : Controller
         var user = await _userManager.FindByIdAsync(userId);
         if (user != null)
         {
-            // Không cho phép xóa tài khoản Admin để bảo vệ hệ thống
+            // Không cho phép xóa tài khoản Admin
             if (await _userManager.IsInRoleAsync(user, "Admin"))
             {
-                // Có thể thêm TempData để thông báo lỗi
                 return RedirectToAction("Index");
             }
+
+            // === KIỂM TRA NẾU LÀ GIẢNG VIÊN VÀ CÓ LỚP HỌC ===
+            if (await _userManager.IsInRoleAsync(user, "Faculty"))
+            {
+                var classrooms = await _context.Classrooms
+                    .Where(c => c.FacultyId == userId)
+                    .ToListAsync();
+
+                if (classrooms.Any())
+                {
+                    var classroomNames = string.Join(", ", classrooms.Select(c => c.ClassName));
+                    TempData["CannotDeleteMessage"] = $"Cannot delete faculty member '{user.FullName}' because they are assigned to the following classes: {classroomNames}. Please re-assign these classes to another faculty member or delete them first.";
+                    return RedirectToAction("Index");
+                }
+            }
+            // === KẾT THÚC LOGIC KIỂM TRA ===
 
             // Nếu người dùng là Student, cần xóa cả hồ sơ Student liên quan
             if (await _userManager.IsInRoleAsync(user, "Student"))
