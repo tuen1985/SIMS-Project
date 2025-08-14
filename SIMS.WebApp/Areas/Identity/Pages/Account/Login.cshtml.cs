@@ -1,3 +1,5 @@
+// File: SIMS.WebApp/Areas/Identity/Pages/Account/Login.cshtml.cs
+// ... (các using và ph?n ??u class gi? nguyên)
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
@@ -57,6 +59,14 @@ namespace SIMS.WebApp.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+            // === LOGIC M?I ===
+            // N?u ng??i dùng ?ã ??ng nh?p, chuy?n h??ng h? ??n trang chính
+            if (_signInManager.IsSignedIn(User))
+            {
+                Response.Redirect(Url.Content("~/"));
+            }
+            // =================
+
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 ModelState.AddModelError(string.Empty, ErrorMessage);
@@ -72,6 +82,7 @@ namespace SIMS.WebApp.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
+        // ... (ph??ng th?c OnPostAsync gi? nguyên)
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
@@ -88,12 +99,8 @@ namespace SIMS.WebApp.Areas.Identity.Pages.Account
                     return LocalRedirect(returnUrl);
                 }
 
-                // ==========================================================
-                //      PH?N LOGIC M?I ?? KI?M TRA TÀI KHO?N CH? DUY?T
-                // ==========================================================
                 if (result.IsNotAllowed)
                 {
-                    // Ki?m tra xem tài kho?n có t?n t?i nh?ng ch?a ???c duy?t không
                     var user = await _userManager.FindByEmailAsync(Input.Email);
                     if (user != null && !await _userManager.IsEmailConfirmedAsync(user))
                     {
@@ -101,7 +108,6 @@ namespace SIMS.WebApp.Areas.Identity.Pages.Account
                         return Page();
                     }
                 }
-                // ==========================================================
 
                 if (result.RequiresTwoFactor)
                 {
@@ -119,7 +125,6 @@ namespace SIMS.WebApp.Areas.Identity.Pages.Account
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return Page();
         }
     }
