@@ -6,6 +6,16 @@
 
 <h1>@ViewData["Title"]</h1>
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
 <p>
     <a asp-action="Create" class="btn btn-primary">Create New Classroom</a>
 </p>

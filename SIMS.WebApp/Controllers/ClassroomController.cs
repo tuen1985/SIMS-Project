@@ -167,28 +167,28 @@ namespace SIMS.WebApp.Controllers
             return RedirectToAction("Details", new { id = classroomId });
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            // Tìm lớp học cần xóa, bao gồm cả các lượt đăng ký liên quan
             var classroom = await _context.Classrooms
                 .Include(c => c.Enrollments)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (classroom != null)
             {
-                // Xóa tất cả các lượt đăng ký trong lớp học này trước
-                _context.Enrollments.RemoveRange(classroom.Enrollments);
+                // Kiểm tra xem có sinh viên nào trong lớp không.
+                if (classroom.Enrollments.Any())
+                {
+                    // Nếu có, lưu thông báo lỗi vào TempData.
+                    TempData["ErrorMessage"] = "Cannot delete a classroom that contains enrolled students. Please remove all students first.";
+                    // Chuyển hướng về lại trang Index.
+                    return RedirectToAction(nameof(Index));
+                }
 
-                // Sau đó mới xóa lớp học
+                // Nếu không có sinh viên, tiến hành xóa.
                 _context.Classrooms.Remove(classroom);
-
-                // Lưu thay đổi vào database
                 await _context.SaveChangesAsync();
             }
 
-            // Chuyển hướng về lại trang danh sách
             return RedirectToAction(nameof(Index));
         }
 
